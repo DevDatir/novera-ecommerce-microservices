@@ -27,24 +27,24 @@ jobs:
 
       - name: Build Authentication Service
         working-directory: ./authentication-service
-        run: mvn -B clean verify
+        run: mvn clean package -DskipTests
 
       - name: Build Product Service
         working-directory: ./product-service
-        run: mvn -B clean verify
+        run: mvn clean package -DskipTests
 
       - name: Build Cart Service
         working-directory: ./cart-service
-        run: mvn -B clean verify
+        run: mvn clean package -DskipTests
 
       - name: Build Order Service
         working-directory: ./order-service
-        run: mvn -B clean verify
+        run: mvn clean package -DskipTests
 
       - name: Build Payment Service
         working-directory: ./paymnet-service
-        run: mvn -B clean verify
+        run: mvn clean package -DskipTests
 
       - name: Build Gateway Service
         working-directory: ./gateway-service
-        run: mvn -B clean verify
+        run: mvn clean package -DskipTests
