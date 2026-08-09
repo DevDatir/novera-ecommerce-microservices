@@ -1,468 +1,168 @@
-# 🛒 Novera - E-Commerce Microservices Application
+# Novera E-Commerce Microservices
 
-A production-inspired **Spring Boot Microservices E-Commerce Application** built using **Java 21**, **Spring Boot 3**, **Spring Security**, **JWT Authentication**, **React + TypeScript**, **PostgreSQL**, **Docker**, and **Kubernetes**.
+Novera is a Spring Boot microservices e-commerce application with a React frontend. The complete development stack runs in Docker: frontend, gateway, five backend services, and PostgreSQL 17.
 
-The project demonstrates how modern enterprise-scale e-commerce applications are designed using independently deployable microservices, secure authentication, inter-service communication, payment gateway integration, and cloud-native deployment practices.
+## Prerequisites
 
----
+Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and ensure it is running. No local Java, Maven, Node.js, or PostgreSQL installation is required.
 
-# 📸 Screenshots
+If local PostgreSQL is running on port `5432`, stop it before starting this project. Docker publishes PostgreSQL on the same port.
 
-> *(Add screenshots here once the frontend is complete.)*
+## Start from a clone
 
-- Home Page
-- Product Listing
-- Product Details
-- Shopping Cart
-- Checkout
-- Payment Gateway
-- Order History
-
----
-
-# 🚀 Features
-
-## 👤 Authentication
-
-- User Registration
-- User Login
-- JWT Authentication
-- BCrypt Password Encryption
-- Spring Security
-- Protected APIs
-- Role-based architecture (Extensible)
-
----
-
-## 👟 Product Management
-
-- Browse Products
-- Product Details
-- Category Filtering
-- Search Products
-- Pagination
-- Product Images
-- Stock Management
-- Ratings
-
----
-
-## 🛒 Shopping Cart
-
-- Add Product to Cart
-- Update Quantity
-- Remove Product
-- Clear Cart
-- Persistent User Cart
-- Real-time Cart Updates using React Query
-
----
-
-## 📍 Address Management
-
-- Add Address
-- Edit Address
-- Delete Address
-- Default Address
-- Multiple Saved Addresses
-
----
-
-## 📦 Checkout
-
-- Select Shipping Address
-- Review Order
-- Dynamic Order Summary
-- Place Order
-
----
-
-## 💳 Payments
-
-- Razorpay Payment Gateway Integration
-- Secure Payment Verification
-- Signature Verification
-- Payment Status Tracking
-- Sandbox Testing Support
-
----
-
-## 📃 Orders
-
-- Place Orders
-- View Order History
-- Order Details
-- Cancel Orders
-- Payment Status
-- Order Status Tracking
-
----
-
-# 🏗️ Microservices Architecture
-
-```
-                        +----------------+
-                        | React Frontend |
-                        +--------+-------+
-                                 |
-                                 |
-                          API Gateway
-                                 |
-       ---------------------------------------------------
-       |         |         |          |                 |
-       |         |         |          |                 |
- Authentication  Product   Cart     Order          Payment
-    Service      Service   Service   Service        Service
-       |           |         |          |               |
-       ---------------- PostgreSQL Databases ----------
+```powershell
+git clone <repository-url>
+cd shoesApp
+docker compose up --build -d
 ```
 
-Each service owns its own database and communicates independently.
+The first build downloads Maven and npm dependencies. Open:
 
----
+- Frontend: <http://localhost:3000>
+- Gateway actuator: <http://localhost:8085/actuator/health>
 
-# 🛠️ Tech Stack
+`docker compose up` creates empty service databases and Hibernate creates the tables. To load Novera's committed development data, follow the restore process below.
 
-## Backend
+## Restore the committed development data
 
-- Java 21
-- Spring Boot 3
-- Spring Security
-- Spring Data JPA
-- Hibernate
-- PostgreSQL
-- JWT Authentication
-- Maven
-- REST APIs
+The repository includes these PostgreSQL custom-format dumps in the project root:
 
----
-
-## Frontend
-
-- React
-- TypeScript
-- React Router
-- React Query (TanStack Query)
-- Axios
-- React Hook Form
-- Zod
-- Tailwind CSS
-- Lucide Icons
-
----
-
-## Payment
-
-- Razorpay Sandbox
-- HMAC Signature Verification
-
----
-
-## DevOps
-
-- Docker
-- Docker Compose
-- Kubernetes
-- ConfigMaps
-- Secrets
-- Health Checks
-
----
-
-# 📂 Project Structure
-
-```
-Novera-Ecommerce-Microservices-Application
-│
-├── authentication-service
-│
-├── product-service
-│
-├── cart-service
-│
-├── order-service
-│
-├── payment-service
-│
-├── frontend
-│
-├── docker
-│
-└── kubernetes
+```text
+productdb.dump
+novera_auth_db.dump
+novera_cart_db.dump
+novera_orders.dump
+novera_payment_db.dump
 ```
 
----
+Restore into a new Docker database volume before starting the backend services. This avoids services creating tables while `pg_restore` is replacing them.
 
-# 📊 Database Design
-
-The application follows a distributed database architecture.
-
-Each microservice owns its own schema.
-
-### Authentication Service
-
-- Users
-
----
-
-### Product Service
-
-- Products
-- Categories
-- Product Images
-
----
-
-### Cart Service
-
-- Cart
-- Cart Items
-
----
-
-### Order Service
-
-- Orders
-- Order Items
-- Shipping Addresses
-
----
-
-### Payment Service
-
-- Payments
-
----
-
-# 🔐 Authentication Flow
-
-```
-User Login
-      │
-      ▼
-Authentication Service
-      │
-      ▼
-Generate JWT
-      │
-      ▼
-Frontend stores JWT
-      │
-      ▼
-Every Request
-      │
-Authorization: Bearer <JWT>
-      │
-      ▼
-Spring Security JWT Filter
-      │
-      ▼
-Protected APIs
+```powershell
+docker compose down -v
+docker compose up -d postgres-db
+docker compose ps
 ```
 
----
+Wait until `postgres-db` shows `healthy`, then run:
 
-# 🛍️ Order Flow
+```powershell
+docker cp productdb.dump postgres-db:/tmp/productdb.dump
+docker exec postgres-db pg_restore -U postgres -d productdb --clean --if-exists --no-owner /tmp/productdb.dump
 
-```
-Browse Products
-        │
-        ▼
-Add to Cart
-        │
-        ▼
-Checkout
-        │
-        ▼
-Select Address
-        │
-        ▼
-Create Order
-        │
-        ▼
-Payment Gateway
-        │
-        ▼
-Verify Payment
-        │
-        ▼
-Order Confirmed
+docker cp novera_auth_db.dump postgres-db:/tmp/novera_auth_db.dump
+docker exec postgres-db pg_restore -U postgres -d novera_auth_db --clean --if-exists --no-owner /tmp/novera_auth_db.dump
+
+docker cp novera_cart_db.dump postgres-db:/tmp/novera_cart_db.dump
+docker exec postgres-db pg_restore -U postgres -d novera_cart_db --clean --if-exists --no-owner /tmp/novera_cart_db.dump
+
+docker cp novera_orders.dump postgres-db:/tmp/novera_orders.dump
+docker exec postgres-db pg_restore -U postgres -d novera_orders --clean --if-exists --no-owner /tmp/novera_orders.dump
+
+docker cp novera_payment_db.dump postgres-db:/tmp/novera_payment_db.dump
+docker exec postgres-db pg_restore -U postgres -d novera_payment_db --clean --if-exists --no-owner /tmp/novera_payment_db.dump
 ```
 
----
+Start the application after the restores complete:
 
-# 🔄 Microservice Communication
-
-Services communicate internally using REST APIs.
-
-### Product Service
-
-Provides
-
-- Product Details
-- Product Availability
-
----
-
-### Cart Service
-
-Consumes Product Service.
-
----
-
-### Order Service
-
-Consumes
-
-- Cart Service
-- Product Service
-- Address Service
-
----
-
-### Payment Service
-
-Consumes
-
-- Order Service
-
----
-
-# 📦 REST APIs
-
-## Authentication
-
-- Register
-- Login
-- Validate JWT
-
----
-
-## Products
-
-- Get Products
-- Search Products
-- Filter Products
-- Product Details
-
----
-
-## Cart
-
-- Add Item
-- Update Quantity
-- Remove Item
-- Clear Cart
-
----
-
-## Addresses
-
-- Add Address
-- Update Address
-- Delete Address
-- Get Addresses
-
----
-
-## Orders
-
-- Place Order
-- Get Orders
-- Get Order Details
-- Cancel Order
-
----
-
-## Payments
-
-- Create Razorpay Order
-- Verify Payment
-
----
-
-# 🧪 Testing
-
-The project has been tested using
-
-- Swagger UI
-- Postman
-- Razorpay Sandbox
-
----
-
-# 🐳 Docker
-
-Each microservice contains its own Dockerfile.
-
-Run using
-
-```bash
-docker-compose up --build
+```powershell
+docker compose up --build -d
 ```
 
----
+`--clean --if-exists` replaces any existing restored objects, and `--no-owner` avoids failures caused by database-role ownership differences.
 
-# ☸️ Kubernetes
+> The dumps contain development data. Do not commit production data, real customer information, passwords, payment data, or secrets to source control.
 
-Deployment includes
+## Architecture
 
-- Deployments
-- Services
-- ConfigMaps
-- Secrets
+Docker Compose creates an internal bridge network (`shoesapp_default`). Docker DNS makes each Compose service name resolvable by the other containers.
 
-Deploy using
-
-```bash
-kubectl apply -f kubernetes/
+```text
+frontend -> gateway-service -> backend services -> postgres-db
 ```
 
----
+For example, Docker-profile datasource URLs use `postgres-db`, not `localhost` or `host.docker.internal`:
 
-# 🔮 Future Enhancements
+```text
+jdbc:postgresql://postgres-db:5432/novera_auth_db
+jdbc:postgresql://postgres-db:5432/productdb
+jdbc:postgresql://postgres-db:5432/novera_cart_db
+jdbc:postgresql://postgres-db:5432/novera_orders
+jdbc:postgresql://postgres-db:5432/novera_payment_db
+```
 
-- API Gateway
-- Service Discovery (Eureka)
-- Distributed Tracing
-- Centralized Logging
-- Email Notifications
-- Wishlist
-- Product Reviews
-- Inventory Service
-- Recommendation Engine
-- Admin Dashboard
-- CI/CD Pipeline
-- AWS Deployment
+Inside a container, `localhost` means that same container. Container-to-container requests must use the Compose service name, such as `http://product-service:8081`.
 
----
+## PostgreSQL initialization and persistence
 
-# 🎯 Learning Outcomes
+`postgres/init.sql` is mounted at `/docker-entrypoint-initdb.d/init.sql`. The official PostgreSQL image runs it automatically only when the named `postgres_data` volume is empty. It creates the five service-owned databases.
 
-This project demonstrates practical implementation of:
+The named volume is mounted at `/var/lib/postgresql/data`:
 
-- Microservices Architecture
-- REST API Design
-- JWT Authentication
-- Spring Security
-- React + TypeScript
-- React Query
-- PostgreSQL
-- Docker
-- Kubernetes
-- Payment Gateway Integration
-- Distributed System Design
+- `docker compose down` removes containers but keeps the database data.
+- `docker compose down -v` also deletes `postgres_data`; use it only for a complete reset.
+- Without a volume, recreating the PostgreSQL container loses all databases and data.
 
----
+The PostgreSQL healthcheck uses `pg_isready`. Backend services wait for PostgreSQL to be healthy before they start. `restart: unless-stopped` restarts containers after Docker or host restarts unless you intentionally stop them.
 
-# 👨‍💻 Author
+## Create new dumps
 
-**Dev Datir**
+Create a dump from a local PostgreSQL server:
 
-Computer Engineering | Java Backend Developer | Spring Boot | Microservices | React | Docker | Kubernetes
+```powershell
+pg_dump -U postgres -Fc --no-owner --no-acl -d productdb -f productdb.dump
+```
 
----
+Repeat for each service database. `-Fc` creates PostgreSQL's custom format, which is compact and works with `pg_restore` for selective or clean restores.
 
-# ⭐ Support
+Create a dump from the Docker database without needing local PostgreSQL tools:
 
-If you found this project useful, consider giving it a ⭐ on GitHub!
+```powershell
+docker exec postgres-db pg_dump -U postgres -Fc -d productdb -f /tmp/productdb.dump
+docker cp postgres-db:/tmp/productdb.dump ./productdb.dump
+```
+
+Dumps are important because a database volume protects data only on one machine. A dump is portable: it supports disaster recovery, sharing reproducible development data, and moving data to another environment. It is a snapshot, not a substitute for versioned schema migrations.
+
+## Useful commands
+
+```powershell
+docker compose ps
+docker compose logs -f postgres-db
+docker compose logs -f product-service
+docker exec -it postgres-db psql -U postgres -d postgres -c "\l"
+docker exec -it postgres-db psql -U postgres -d productdb -c "\dt"
+docker network inspect shoesapp_default
+```
+
+Expected results:
+
+- `postgres-db` is `healthy`.
+- `\l` lists the five Novera databases.
+- `\dt` lists tables for the selected service database.
+- Service logs show a JDBC URL containing `postgres-db`.
+
+## Configuration and schema ownership
+
+`application.properties` is the local profile and uses `localhost`. `application-docker.properties` overrides only Docker-specific values, including the `postgres-db` hostname and internal service URLs. Spring loads the Docker profile through `SPRING_PROFILES_ACTIVE=docker` in Compose.
+
+Each service owns one database. Services communicate through APIs, not by reading each other's tables. This prevents tight schema coupling and allows every service to evolve independently.
+
+This project currently uses Hibernate `spring.jpa.hibernate.ddl-auto=update` for schema creation. It does not yet contain Liquibase changelogs. The production migration path is to add reviewed, per-service Liquibase baseline changelogs and change Hibernate to `ddl-auto=validate`.
+
+## Project structure
+
+```text
+docker-compose.yml
+postgres/
+  init.sql
+authentication-service/
+product-service/
+cart-service/
+order-service/
+paymnet-service/
+gateway-service/
+frontend/novera-frontend/
+*.dump
+```
+
+The backend Dockerfiles use multi-stage Maven builds, so a clone builds its own JARs. PostgreSQL and service credentials in this learning setup are development-only; use CI secrets, Docker secrets, or Kubernetes Secrets outside local development.
