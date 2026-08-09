@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-db
+  namespace: novera
+
+spec:
+  serviceName: postgres-db
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: postgres-db
+
+  template:
+    metadata:
+      labels:
+        app: postgres-db
+
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17
+
+          ports:
+            - containerPort: 5432
+
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: novera-config
+                  key: POSTGRES_USER
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: novera-secret
+                  key: POSTGRES_PASSWORD
+
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: novera-config
+                  key: POSTGRES_DB
+
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
