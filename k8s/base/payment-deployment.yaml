@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: payment-service
-          image: devdatir/novera-payment-service:0.2.1
+          image: devdatir/novera-payment-service:0.2.5
 
           ports:
             - containerPort: 8084

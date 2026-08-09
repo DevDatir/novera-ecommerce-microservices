@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: devdatir/novera-order-service:0.2.1
+          image: devdatir/novera-order-service:0.2.5
 
           ports:
             - containerPort: 8083

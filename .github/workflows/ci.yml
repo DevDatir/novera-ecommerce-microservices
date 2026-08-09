@@ -67,10 +67,65 @@ jobs:
       - name: Build Product Service image
         run: |
           docker build \
-            -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:0.2.1 \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:0.2.5 \
             ./product-service
  
       - name: Push Product Service image
         run: |
           docker push \
-            ${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:0.2.1
+            ${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:0.2.5
+
+      - name: Build Authentication Service image
+        run: |
+          docker build \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-auth-service:0.2.5 \
+            ./authentication-service
+
+      - name: Push Authentication Service image
+        run: |
+          docker push \
+            ${{ secrets.DOCKERHUB_USERNAME }}/novera-auth-service:0.2.5
+
+      - name: Build Cart Service image
+        run: |
+          docker build \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-cart-service:0.2.5 \
+            ./cart-service
+
+      - name: Push Cart Service image
+        run: |
+          docker push \
+            ${{ secrets.DOCKERHUB_USERNAME }}/novera-cart-service:0.2.5
+
+      - name: Build Order Service image
+        run: |
+          docker build \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-order-service:0.2.5 \
+            ./order-service
+
+      - name: Push Order Service image
+        run: |
+          docker push \
+            ${{ secrets.DOCKERHUB_USERNAME }}/novera-order-service:0.2.5
+
+      - name: Build Payment Service image
+        run: |
+          docker build \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-payment-service:0.2.5 \
+            ./paymnet-service
+
+      - name: Push Payment Service image
+        run: |
+          docker push \
+            ${{ secrets.DOCKERHUB_USERNAME }}/novera-payment-service:0.2.5
+
+      - name: Build Gateway Service image
+        run: |
+          docker build \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:0.2.5 \
+            ./gateway-service
+
+      - name: Push Gateway Service image
+        run: |
+          docker push \
+            ${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:0.2.5

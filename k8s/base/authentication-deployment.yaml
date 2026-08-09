@@ -21,7 +21,7 @@ spec:
       containers:
         - name: authentication-service
 
-          image: devdatir/novera-auth-service:0.2.2
+          image: devdatir/novera-auth-service:0.2.5
 
           ports:
             - containerPort: 8080

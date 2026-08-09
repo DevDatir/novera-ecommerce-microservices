@@ -21,7 +21,7 @@ spec:
       containers:
         - name: product-service
 
-          image: devdatir/novera-product-service:0.2.1
+          image: devdatir/novera-product-service:0.2.5
 
           ports:
             - containerPort: 8081

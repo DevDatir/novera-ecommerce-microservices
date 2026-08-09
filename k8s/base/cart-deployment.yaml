@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: cart-service
-          image: devdatir/novera-cart-service:0.2.1
+          image: devdatir/novera-cart-service:0.2.5
 
           ports:
             - containerPort: 8082
