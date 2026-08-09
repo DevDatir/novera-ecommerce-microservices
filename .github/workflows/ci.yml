@@ -69,7 +69,7 @@ jobs:
           docker build \
             -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:0.2.1 \
             ./product-service
-
+    #fd 
       - name: Push Product Service image
         run: |
           docker push \
