@@ -1,0 +1,50 @@
+name: Novera CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build Authentication Service
+        working-directory: ./authentication-service
+        run: mvn -B clean verify
+
+      - name: Build Product Service
+        working-directory: ./product-service
+        run: mvn -B clean verify
+
+      - name: Build Cart Service
+        working-directory: ./cart-service
+        run: mvn -B clean verify
+
+      - name: Build Order Service
+        working-directory: ./order-service
+        run: mvn -B clean verify
+
+      - name: Build Payment Service
+        working-directory: ./paymnet-service
+        run: mvn -B clean verify
+
+      - name: Build Gateway Service
+        working-directory: ./gateway-service
+        run: mvn -B clean verify
