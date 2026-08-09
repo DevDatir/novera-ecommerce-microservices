@@ -94,7 +94,7 @@ const HomePage = () => {
               >
 
                 <img
-                  src="https://raw.githubusercontent.com/DevDatir/Novero-ImageStorage/main/1-2-removebg-preview.png"
+                  src="https://ik.imagekit.io/4dzauczkz/6-3-removebg-preview.png?updatedAt=1785964396130"
                   alt="Hero Shoe"
                   className="
                   w-[430px]

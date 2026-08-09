@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-service
+  namespace: novera
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: gateway-service
+
+  template:
+    metadata:
+      labels:
+        app: gateway-service
+
+    spec:
+      containers:
+        - name: gateway-service
+          image: devdatir/novera-gateway-service:0.2.1
+          ports:
+            - containerPort: 8085
+
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+
+          envFrom:
+            - configMapRef:
+                name: novera-config
+            - secretRef:
+                name: novera-secret
+
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "768Mi"
+
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8085
+            failureThreshold: 30
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8085
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8085
+            initialDelaySeconds: 30
+            periodSeconds: 20
