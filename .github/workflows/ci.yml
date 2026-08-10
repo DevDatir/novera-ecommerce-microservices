@@ -172,9 +172,9 @@ on:
       - main
 
 jobs:
-  # -------------------------------------------------------------------
+  # ===================================================================
   # 1. PATH FILTERING: Detect which services changed in this commit
-  # -------------------------------------------------------------------
+  # ===================================================================
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
@@ -211,9 +211,9 @@ jobs:
               - 'gateway-service/**'
               - 'frontend/novera-frontend/**'
 
-  # -------------------------------------------------------------------
-  # 2. BUILD & TEST: Only run for services that changed
-  # -------------------------------------------------------------------
+  # ===================================================================
+  # 2. BUILD & TEST: Compile changed services only
+  # ===================================================================
   build-and-test:
     needs: detect-changes
     if: ${{ needs.detect-changes.outputs.any_changed == 'true' }}
@@ -281,17 +281,31 @@ jobs:
           npm ci
           npm run build
 
-  # -------------------------------------------------------------------
-  # 3. DOCKER BUILD & PUSH: Incremental versioning & selective build
-  # -------------------------------------------------------------------
+  # ===================================================================
+  # 3. DOCKER BUILD & PUSH: Incremental Rollover Tagging (0.2.9 -> 0.3.0)
+  # ===================================================================
   docker-build-push:
     needs: [detect-changes, build-and-test]
     if: github.ref == 'refs/heads/main' && needs.detect-changes.outputs.any_changed == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      version_tag: ${{ steps.version.outputs.tag }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # Calculate version tag using Modulo Math
+      - name: Calculate Version Tag
+        id: version
+        run: |
+          RUN_NUM=${{ github.run_number }}
+          MINOR=$(( 2 + (RUN_NUM / 10) ))
+          PATCH=$(( RUN_NUM % 10 ))
+          TAG="0.${MINOR}.${PATCH}"
+          
+          echo "Generated version tag: $TAG"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -299,141 +313,106 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Helper script to auto-increment SemVer (0.2.2 -> 0.2.3, 0.2.9 -> 0.3.0)
-      - name: Define Tag Incrementor Function
-        run: |
-          increment_version() {
-            local image_name=$1
-            local default_version="0.2.0"
-            
-            # Fetch current tags from Docker Hub API
-            TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "'"${{ secrets.DOCKERHUB_USERNAME }}"'", "password": "'"${{ secrets.DOCKERHUB_TOKEN }}"'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
-            LATEST_TAG=$(curl -s -H "Authorization: JWT ${TOKEN}" "https://hub.docker.com/v2/repositories/${{ secrets.DOCKERHUB_USERNAME }}/${image_name}/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
-
-            if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" == "null" ]; then
-              echo "$default_version"
-              return
-            fi
-
-            IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_TAG"
-            
-            # Increment logic: if patch is 9, rollover to minor (0.2.9 -> 0.3.0)
-            if [ "$PATCH" -eq 9 ]; then
-              MINOR=$((MINOR + 1))
-              PATCH=0
-            else
-              PATCH=$((PATCH + 1))
-            fi
-
-            echo "${MAJOR}.${MINOR}.${PATCH}"
-          }
-          
-          # Export function so subshells can use it
-          declare -f increment_version > version_helper.sh
-
-      # --- Frontend ---
-      - name: Build & Push Frontend
+      # --- Build & Push Changed Images Only ---
+      - name: Build & Push Frontend Image
         if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
         run: |
-          source version_helper.sh
-          TAG=$(increment_version "novera-frontend")
-          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/novera-frontend:${TAG}"
-          echo "Building $IMAGE"
-          docker build -t $IMAGE ./frontend/novera-frontend
-          docker push $IMAGE
-          echo "FRONTEND_TAG=${TAG}" >> $GITHUB_ENV
+          TAG="${{ steps.version.outputs.tag }}"
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-frontend:${TAG} ./frontend/novera-frontend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-frontend:${TAG}
 
-      # --- Auth Service ---
-      - name: Build & Push Auth Service
+      - name: Build & Push Auth Service Image
         if: ${{ needs.detect-changes.outputs.auth == 'true' }}
         run: |
-          source version_helper.sh
-          TAG=$(increment_version "novera-auth-service")
-          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/novera-auth-service:${TAG}"
-          echo "Building $IMAGE"
-          docker build -t $IMAGE ./authentication-service
-          docker push $IMAGE
+          TAG="${{ steps.version.outputs.tag }}"
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-auth-service:${TAG} ./authentication-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-auth-service:${TAG}
 
-      # --- Product Service ---
-      - name: Build & Push Product Service
+      - name: Build & Push Product Service Image
         if: ${{ needs.detect-changes.outputs.product == 'true' }}
         run: |
-          source version_helper.sh
-          TAG=$(increment_version "novera-product-service")
-          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:${TAG}"
-          echo "Building $IMAGE"
-          docker build -t $IMAGE ./product-service
-          docker push $IMAGE
+          TAG="${{ steps.version.outputs.tag }}"
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:${TAG} ./product-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:${TAG}
 
-      # --- Cart Service ---
-      - name: Build & Push Cart Service
+      - name: Build & Push Cart Service Image
         if: ${{ needs.detect-changes.outputs.cart == 'true' }}
         run: |
-          source version_helper.sh
-          TAG=$(increment_version "novera-cart-service")
-          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/novera-cart-service:${TAG}"
-          echo "Building $IMAGE"
-          docker build -t $IMAGE ./cart-service
-          docker push $IMAGE
+          TAG="${{ steps.version.outputs.tag }}"
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-cart-service:${TAG} ./cart-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-cart-service:${TAG}
 
-      # --- Order Service ---
-      - name: Build & Push Order Service
+      - name: Build & Push Order Service Image
         if: ${{ needs.detect-changes.outputs.order == 'true' }}
         run: |
-          source version_helper.sh
-          TAG=$(increment_version "novera-order-service")
-          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/novera-order-service:${TAG}"
-          echo "Building $IMAGE"
-          docker build -t $IMAGE ./order-service
-          docker push $IMAGE
+          TAG="${{ steps.version.outputs.tag }}"
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-order-service:${TAG} ./order-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-order-service:${TAG}
 
-      # --- Payment Service ---
-      - name: Build & Push Payment Service
+      - name: Build & Push Payment Service Image
         if: ${{ needs.detect-changes.outputs.payment == 'true' }}
         run: |
-          source version_helper.sh
-          TAG=$(increment_version "novera-payment-service")
-          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/novera-payment-service:${TAG}"
-          echo "Building $IMAGE"
-          docker build -t $IMAGE ./paymnet-service
-          docker push $IMAGE
+          TAG="${{ steps.version.outputs.tag }}"
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-payment-service:${TAG} ./paymnet-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-payment-service:${TAG}
 
-      # --- Gateway Service ---
-      - name: Build & Push Gateway Service
+      - name: Build & Push Gateway Service Image
         if: ${{ needs.detect-changes.outputs.gateway == 'true' }}
         run: |
-          source version_helper.sh
-          TAG=$(increment_version "novera-gateway-service")
-          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:${TAG}"
-          echo "Building $IMAGE"
-          docker build -t $IMAGE ./gateway-service
-          docker push $IMAGE
+          TAG="${{ steps.version.outputs.tag }}"
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:${TAG} ./gateway-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:${TAG}
 
-  # -------------------------------------------------------------------
-  # 4. DEPLOYMENT: Runs on your SELF-HOSTED RUNNER connected to Kubernetes
-  # -------------------------------------------------------------------
+  # ===================================================================
+  # 4. DEPLOYMENT: Runs on your Windows Self-Hosted Runner
+  # ===================================================================
   deploy-k8s:
     needs: [detect-changes, docker-build-push]
     if: github.ref == 'refs/heads/main' && needs.detect-changes.outputs.any_changed == 'true'
-    runs-on: self-hosted  # Target your self-hosted runner machine
+    runs-on: self-hosted
 
-    # Set default shell to bash for all steps in this job on Windows
+    # Explicitly use Git Bash on your Windows Laptop runner
     defaults:
       run:
         shell: bash
 
     steps:
-      - name: Checkout repository 
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify kubectl connection
+      - name: Apply base manifests
         run: |
-          kubectl cluster-info
+          kubectl apply -f k8s/base/
 
-      - name: Apply Kubernetes Manifests
+      - name: Update deployment images in Kubernetes
         run: |
-          # Apply all manifest files in your k8s directory
-          kubectl apply -f k8s/base
+          TAG="${{ needs.docker-build-push.outputs.version_tag }}"
+          echo "Updating deployments to tag: ${TAG}"
 
-          # Optionally restart deployments to pick up new images if using latest/matching tags
-          # kubectl rollout restart deployment -n default
+          if [ "${{ needs.detect-changes.outputs.frontend }}" == "true" ]; then
+            kubectl set image deployment/novera-frontend-deployment frontend=${{ secrets.DOCKERHUB_USERNAME }}/novera-frontend:${TAG}
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.auth }}" == "true" ]; then
+            kubectl set image deployment/novera-auth-deployment auth-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-auth-service:${TAG}
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.product }}" == "true" ]; then
+            kubectl set image deployment/novera-product-deployment product-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:${TAG}
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.cart }}" == "true" ]; then
+            kubectl set image deployment/novera-cart-deployment cart-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-cart-service:${TAG}
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.order }}" == "true" ]; then
+            kubectl set image deployment/novera-order-deployment order-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-order-service:${TAG}
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.payment }}" == "true" ]; then
+            kubectl set image deployment/novera-payment-deployment payment-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-payment-service:${TAG}
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.gateway }}" == "true" ]; then
+            kubectl set image deployment/novera-gateway-deployment gateway-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:${TAG}
+          fi
