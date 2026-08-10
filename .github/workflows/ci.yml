@@ -1,180 +1,19 @@
-# name: Novera CI
-
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches:
-#       - main
-
-# jobs:
-
-#   build-and-test:
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#       - name: Checkout repository
-#         uses: actions/checkout@v6
-
-#       - name: Set up Java
-#         uses: actions/setup-java@v5
-#         with:
-#           distribution: temurin
-#           java-version: '21'
-#           cache: maven
-
-#       - name: Build Authentication Service
-#         working-directory: ./authentication-service
-#         run: mvn clean package -DskipTests
-
-#       - name: Build Product Service
-#         working-directory: ./product-service
-#         run: mvn clean package -DskipTests
-
-#       - name: Build Cart Service
-#         working-directory: ./cart-service
-#         run: mvn clean package -DskipTests
-
-#       - name: Build Order Service
-#         working-directory: ./order-service
-#         run: mvn clean package -DskipTests
-
-#       - name: Build Payment Service
-#         working-directory: ./paymnet-service
-#         run: mvn clean package -DskipTests
-
-#       - name: Build Gateway Service
-#         working-directory: ./gateway-service
-#         run: mvn clean package -DskipTests
-
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v5
-#         with:
-#           node-version: '22'
-#           cache: npm
-#           cache-dependency-path: frontend/novera-frontend/package-lock.json
-
-#       - name: Build Frontend
-#         working-directory: ./frontend/novera-frontend
-#         env:
-#           VITE_PRODUCT_API: http://localhost
-#           VITE_AUTH_API: http://localhost
-#           VITE_CART_API: http://localhost
-#           VITE_ORDER_API: http://localhost
-#           VITE_PAYMENT_API: http://localhost
-#         run: |
-#           npm ci
-#           npm run build
-
-#   docker-build-push:
-#     needs: build-and-test
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#       - name: Checkout repository
-#         uses: actions/checkout@v6
-
-#       - name: Log in to Docker Hub
-#         uses: docker/login-action@v3
-#         with:
-#           username: ${{ secrets.DOCKERHUB_USERNAME }}
-#           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-#       - name: Build Frontend image
-#         run: |
-#           docker build \
-#             -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-frontend:0.2.1 \
-#             ./frontend/novera-frontend
-
-#       - name: Push Frontend image
-#         run: |
-#           docker push \
-#             ${{ secrets.DOCKERHUB_USERNAME }}/novera-frontend:0.2.1
-
-#       - name: Build Product Service image
-#         run: |
-#           docker build \
-#             -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:0.2.5 \
-#             ./product-service
- 
-#       - name: Push Product Service image
-#         run: |
-#           docker push \
-#             ${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:0.2.5
-
-#       - name: Build Authentication Service image
-#         run: |
-#           docker build \
-#             -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-auth-service:0.2.5 \
-#             ./authentication-service
-
-#       - name: Push Authentication Service image
-#         run: |
-#           docker push \
-#             ${{ secrets.DOCKERHUB_USERNAME }}/novera-auth-service:0.2.5
-
-#       - name: Build Cart Service image
-#         run: |
-#           docker build \
-#             -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-cart-service:0.2.5 \
-#             ./cart-service
-
-#       - name: Push Cart Service image
-#         run: |
-#           docker push \
-#             ${{ secrets.DOCKERHUB_USERNAME }}/novera-cart-service:0.2.5
-
-#       - name: Build Order Service image
-#         run: |
-#           docker build \
-#             -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-order-service:0.2.5 \
-#             ./order-service
-
-#       - name: Push Order Service image
-#         run: |
-#           docker push \
-#             ${{ secrets.DOCKERHUB_USERNAME }}/novera-order-service:0.2.5
-
-#       - name: Build Payment Service image
-#         run: |
-#           docker build \
-#             -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-payment-service:0.2.5 \
-#             ./paymnet-service
-
-#       - name: Push Payment Service image
-#         run: |
-#           docker push \
-#             ${{ secrets.DOCKERHUB_USERNAME }}/novera-payment-service:0.2.5
-
-#       - name: Build Gateway Service image
-#         run: |
-#           docker build \
-#             -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:0.2.5 \
-#             ./gateway-service
-
-#       - name: Push Gateway Service image
-#         run: |
-#           docker push \
-#             ${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:0.2.5
-
-
-name: Novera CI/CD Pipeline
+name: Novera CI/CD
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: novera-main-image-release
+  cancel-in-progress: false
 
 jobs:
-  # ===================================================================
-  # 1. PATH FILTERING: Detect which services changed in this commit
-  # ===================================================================
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
@@ -187,11 +26,9 @@ jobs:
       frontend: ${{ steps.filter.outputs.frontend }}
       any_changed: ${{ steps.filter.outputs.any_changed }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Check for file changes
-        id: filter
+      - id: filter
         uses: dorny/paths-filter@v3
         with:
           filters: |
@@ -211,215 +48,140 @@ jobs:
               - 'gateway-service/**'
               - 'frontend/novera-frontend/**'
 
-  # ===================================================================
-  # 2. BUILD & TEST: Compile changed services only
-  # ===================================================================
-  build-and-test:
+  test:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.any_changed == 'true' }}
+    if: needs.detect-changes.outputs.any_changed == 'true'
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Java 21
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
           cache: maven
 
-      - name: Build Auth Service
-        if: ${{ needs.detect-changes.outputs.auth == 'true' }}
-        working-directory: ./authentication-service
-        run: mvn clean package -DskipTests
+      - if: needs.detect-changes.outputs.auth == 'true'
+        run: mvn -B -f authentication-service/pom.xml test
+      - if: needs.detect-changes.outputs.product == 'true'
+        run: mvn -B -f product-service/pom.xml test
+      - if: needs.detect-changes.outputs.cart == 'true'
+        run: mvn -B -f cart-service/pom.xml test
+      - if: needs.detect-changes.outputs.order == 'true'
+        run: mvn -B -f order-service/pom.xml test
+      - if: needs.detect-changes.outputs.payment == 'true'
+        run: mvn -B -f paymnet-service/pom.xml test
+      - if: needs.detect-changes.outputs.gateway == 'true'
+        run: mvn -B -f gateway-service/pom.xml test
 
-      - name: Build Product Service
-        if: ${{ needs.detect-changes.outputs.product == 'true' }}
-        working-directory: ./product-service
-        run: mvn clean package -DskipTests
-
-      - name: Build Cart Service
-        if: ${{ needs.detect-changes.outputs.cart == 'true' }}
-        working-directory: ./cart-service
-        run: mvn clean package -DskipTests
-
-      - name: Build Order Service
-        if: ${{ needs.detect-changes.outputs.order == 'true' }}
-        working-directory: ./order-service
-        run: mvn clean package -DskipTests
-
-      - name: Build Payment Service
-        if: ${{ needs.detect-changes.outputs.payment == 'true' }}
-        working-directory: ./paymnet-service
-        run: mvn clean package -DskipTests
-
-      - name: Build Gateway Service
-        if: ${{ needs.detect-changes.outputs.gateway == 'true' }}
-        working-directory: ./gateway-service
-        run: mvn clean package -DskipTests
-
-      - name: Set up Node.js
-        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+      - if: needs.detect-changes.outputs.frontend == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
           cache-dependency-path: frontend/novera-frontend/package-lock.json
 
-      - name: Build Frontend
-        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
-        working-directory: ./frontend/novera-frontend
-        env:
-          VITE_PRODUCT_API: http://localhost
-          VITE_AUTH_API: http://localhost
-          VITE_CART_API: http://localhost
-          VITE_ORDER_API: http://localhost
-          VITE_PAYMENT_API: http://localhost
+      - if: needs.detect-changes.outputs.frontend == 'true'
+        working-directory: frontend/novera-frontend
         run: |
           npm ci
           npm run build
 
-  # ===================================================================
-  # 3. DOCKER BUILD & PUSH: Incremental Rollover Tagging (0.2.9 -> 0.3.0)
-  # ===================================================================
-  docker-build-push:
-    needs: [detect-changes, build-and-test]
+  build-push:
+    needs: [detect-changes, test]
     if: github.ref == 'refs/heads/main' && needs.detect-changes.outputs.any_changed == 'true'
     runs-on: ubuntu-latest
-    outputs:
-      version_tag: ${{ steps.version.outputs.tag }}
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Calculate version tag with offset so it builds sequentially from 0.2.2 onwards
-      - name: Calculate Version Tag
-        id: version
-        run: |
-          TOTAL_RUNS=${{ github.run_number }}
-          
-          # Set OFFSET to 15 so your next run produces 0.2.2
-          OFFSET=16
-          PATCH=$(( TOTAL_RUNS - OFFSET ))
-          
-          if [ $PATCH -lt 1 ]; then
-            PATCH=1
-          fi
-
-          TAG="0.2.${PATCH}"
-          echo "Calculated Tag: $TAG"
-          echo "tag=${TAG}" >> $GITHUB_OUTPUT
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # --- Build & Push Changed Images Only ---
-      - name: Build & Push Frontend Image
-        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+      - name: Build and push changed images
+        shell: bash
+        env:
+          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+          AUTH_CHANGED: ${{ needs.detect-changes.outputs.auth }}
+          PRODUCT_CHANGED: ${{ needs.detect-changes.outputs.product }}
+          CART_CHANGED: ${{ needs.detect-changes.outputs.cart }}
+          ORDER_CHANGED: ${{ needs.detect-changes.outputs.order }}
+          PAYMENT_CHANGED: ${{ needs.detect-changes.outputs.payment }}
+          GATEWAY_CHANGED: ${{ needs.detect-changes.outputs.gateway }}
+          FRONTEND_CHANGED: ${{ needs.detect-changes.outputs.frontend }}
         run: |
-          TAG="${{ steps.version.outputs.tag }}"
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-frontend:${TAG} ./frontend/novera-frontend
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-frontend:${TAG}
+          echo '[]' > image-versions.json
 
-      - name: Build & Push Auth Service Image
-        if: ${{ needs.detect-changes.outputs.auth == 'true' }}
-        run: |
-          TAG="${{ steps.version.outputs.tag }}"
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-auth-service:${TAG} ./authentication-service
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-auth-service:${TAG}
+          next_tag() {
+            local image="$1"
+            local latest
+            latest=$(curl -fsSL "https://hub.docker.com/v2/repositories/$DOCKER_USER/$image/tags?page_size=100" \
+              | jq -r '.results[].name' \
+              | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' \
+              | sort -V \
+              | tail -n 1 || true)
 
-      - name: Build & Push Product Service Image
-        if: ${{ needs.detect-changes.outputs.product == 'true' }}
-        run: |
-          TAG="${{ steps.version.outputs.tag }}"
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:${TAG} ./product-service
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:${TAG}
+            if [ -z "$latest" ]; then
+              echo '0.0.1'
+              return
+            fi
 
-      - name: Build & Push Cart Service Image
-        if: ${{ needs.detect-changes.outputs.cart == 'true' }}
-        run: |
-          TAG="${{ steps.version.outputs.tag }}"
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-cart-service:${TAG} ./cart-service
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-cart-service:${TAG}
+            IFS=. read -r major minor patch <<< "$latest"
+            if [ "$patch" -ge 9 ]; then
+              echo "$major.$((minor + 1)).0"
+            else
+              echo "$major.$minor.$((patch + 1))"
+            fi
+          }
 
-      - name: Build & Push Order Service Image
-        if: ${{ needs.detect-changes.outputs.order == 'true' }}
-        run: |
-          TAG="${{ steps.version.outputs.tag }}"
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-order-service:${TAG} ./order-service
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-order-service:${TAG}
+          publish() {
+            local deployment="$1"
+            local image="$2"
+            local context="$3"
+            local tag
+            tag=$(next_tag "$image")
+            echo "Publishing $image:$tag"
+            docker build -t "$DOCKER_USER/$image:$tag" "$context"
+            docker push "$DOCKER_USER/$image:$tag"
+            jq --arg deployment "$deployment" --arg image "$image" --arg tag "$tag" \
+              '. + [{deployment: $deployment, image: $image, tag: $tag}]' \
+              image-versions.json > image-versions.tmp
+            mv image-versions.tmp image-versions.json
+          }
 
-      - name: Build & Push Payment Service Image
-        if: ${{ needs.detect-changes.outputs.payment == 'true' }}
-        run: |
-          TAG="${{ steps.version.outputs.tag }}"
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-payment-service:${TAG} ./paymnet-service
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-payment-service:${TAG}
+          [ "$AUTH_CHANGED" = true ] && publish authentication-service novera-auth-service authentication-service
+          [ "$PRODUCT_CHANGED" = true ] && publish product-service novera-product-service product-service
+          [ "$CART_CHANGED" = true ] && publish cart-service novera-cart-service cart-service
+          [ "$ORDER_CHANGED" = true ] && publish order-service novera-order-service order-service
+          [ "$PAYMENT_CHANGED" = true ] && publish payment-service novera-payment-service paymnet-service
+          [ "$GATEWAY_CHANGED" = true ] && publish gateway-service novera-gateway-service gateway-service
+          [ "$FRONTEND_CHANGED" = true ] && publish frontend novera-frontend frontend/novera-frontend
 
-      - name: Build & Push Gateway Service Image
-        if: ${{ needs.detect-changes.outputs.gateway == 'true' }}
-        run: |
-          TAG="${{ steps.version.outputs.tag }}"
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:${TAG} ./gateway-service
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:${TAG}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: image-versions
+          path: image-versions.json
 
-# ===================================================================
-  # 4. DEPLOYMENT: Runs natively on Windows Self-Hosted Runner
-  # ===================================================================
   deploy-k8s:
-    needs: [detect-changes, docker-build-push]
+    needs: [detect-changes, build-push]
     if: github.ref == 'refs/heads/main' && needs.detect-changes.outputs.any_changed == 'true'
     runs-on: self-hosted
-
-    # Explicitly run PowerShell on Windows
-    defaults:
-      run:
-        shell: powershell
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Apply base manifests
+      - uses: actions/download-artifact@v4
+        with:
+          name: image-versions
+
+      - name: Deploy changed images
+        shell: powershell
+        env:
+          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          kubectl apply -f k8s/base/
+          $images = Get-Content image-versions.json | ConvertFrom-Json
 
-      - name: Update deployment images in Kubernetes
-        run: |
-          $TAG = "${{ needs.docker-build-push.outputs.version_tag }}"
-          $DOCKER_USER = "${{ secrets.DOCKERHUB_USERNAME }}"
-          Write-Host "Updating deployments to tag: $TAG"
-
-          if ("${{ needs.detect-changes.outputs.frontend }}" -eq "true") {
-            kubectl set image deployment/frontend frontend=${DOCKER_USER}/novera-frontend:${TAG}
-          }
-
-          if ("${{ needs.detect-changes.outputs.auth }}" -eq "true") {
-            kubectl set image deployment/authentication-service authentication-service=${DOCKER_USER}/novera-auth-service:${TAG}
-          }
-
-          if ("${{ needs.detect-changes.outputs.product }}" -eq "true") {
-            kubectl set image deployment/product-service product-service=${DOCKER_USER}/novera-product-service:${TAG}
-          }
-
-          if ("${{ needs.detect-changes.outputs.cart }}" -eq "true") {
-            kubectl set image deployment/cart-service cart-service=${DOCKER_USER}/novera-cart-service:${TAG}
-          }
-
-          if ("${{ needs.detect-changes.outputs.order }}" -eq "true") {
-            kubectl set image deployment/order-service order-service=${DOCKER_USER}/novera-order-service:${TAG}
-          }
-
-          if ("${{ needs.detect-changes.outputs.payment }}" -eq "true") {
-            kubectl set image deployment/payment-service payment-service=${DOCKER_USER}/novera-payment-service:${TAG}
-          }
-
-          if ("${{ needs.detect-changes.outputs.gateway }}" -eq "true") {
-            kubectl set image deployment/gateway-service gateway-service=${DOCKER_USER}/novera-gateway-service:${TAG}
+          foreach ($image in $images) {
+            kubectl set image "deployment/$($image.deployment)" "$($image.deployment)=$env:DOCKER_USER/$($image.image):$($image.tag)" -n novera
+            kubectl rollout status "deployment/$($image.deployment)" -n novera --timeout=180s
           }
