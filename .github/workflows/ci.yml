@@ -295,16 +295,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Calculate version tag using Modulo Math
+      # Calculate version tag with offset so it builds sequentially from 0.2.2 onwards
       - name: Calculate Version Tag
         id: version
         run: |
-          RUN_NUM=${{ github.run_number }}
-          MINOR=$(( 2 + (RUN_NUM / 10) ))
-          PATCH=$(( RUN_NUM % 10 ))
+          # 1. Get total workflow runs
+          TOTAL_RUNS=${{ github.run_number }}
+          
+          # 2. Subtract offset to align with your current release track.
+          # (If current TOTAL_RUNS is 16, offset of 14 makes adjusted count = 2 -> 0.2.2)
+          OFFSET=14
+          ADJUSTED_RUN=$(( TOTAL_RUNS - OFFSET ))
+          
+          # Fallback check in case ADJUSTED_RUN is less than 1
+          if [ $ADJUSTED_RUN -lt 1 ]; then
+            ADJUSTED_RUN=1
+          fi
+
+          # Calculate MINOR and PATCH
+          # Standard patch increment: 0.2.1, 0.2.2, ..., 0.2.9 -> 0.3.0
+          MINOR=$(( 2 + (ADJUSTED_RUN / 10) ))
+          PATCH=$(( ADJUSTED_RUN % 10 ))
           TAG="0.${MINOR}.${PATCH}"
           
-          echo "Generated version tag: $TAG"
+          echo "Calculated Tag: $TAG (Total Runs: $TOTAL_RUNS, Adjusted: $ADJUSTED_RUN)"
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
 
       - name: Log in to Docker Hub
@@ -374,7 +388,7 @@ jobs:
     # Explicitly use Git Bash on your Windows Laptop runner
     defaults:
       run:
-        shell: bash
+        shell: powershell
 
     steps:
       - name: Checkout repository
