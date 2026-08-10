@@ -302,7 +302,7 @@ jobs:
           TOTAL_RUNS=${{ github.run_number }}
           
           # Set OFFSET to 15 so your next run produces 0.2.2
-          OFFSET=15
+          OFFSET=16
           PATCH=$(( TOTAL_RUNS - OFFSET ))
           
           if [ $PATCH -lt 1 ]; then
@@ -397,29 +397,29 @@ jobs:
           Write-Host "Updating deployments to tag: $TAG"
 
           if ("${{ needs.detect-changes.outputs.frontend }}" -eq "true") {
-            kubectl set image deployment/novera-frontend-deployment frontend=${DOCKER_USER}/novera-frontend:${TAG}
+            kubectl set image deployment/frontend frontend=${DOCKER_USER}/novera-frontend:${TAG}
           }
 
           if ("${{ needs.detect-changes.outputs.auth }}" -eq "true") {
-            kubectl set image deployment/novera-auth-deployment auth-service=${DOCKER_USER}/novera-auth-service:${TAG}
+            kubectl set image deployment/authentication-service authentication-service=${DOCKER_USER}/novera-auth-service:${TAG}
           }
 
           if ("${{ needs.detect-changes.outputs.product }}" -eq "true") {
-            kubectl set image deployment/novera-product-deployment product-service=${DOCKER_USER}/novera-product-service:${TAG}
+            kubectl set image deployment/product-service product-service=${DOCKER_USER}/novera-product-service:${TAG}
           }
 
           if ("${{ needs.detect-changes.outputs.cart }}" -eq "true") {
-            kubectl set image deployment/novera-cart-deployment cart-service=${DOCKER_USER}/novera-cart-service:${TAG}
+            kubectl set image deployment/cart-service cart-service=${DOCKER_USER}/novera-cart-service:${TAG}
           }
 
           if ("${{ needs.detect-changes.outputs.order }}" -eq "true") {
-            kubectl set image deployment/novera-order-deployment order-service=${DOCKER_USER}/novera-order-service:${TAG}
+            kubectl set image deployment/order-service order-service=${DOCKER_USER}/novera-order-service:${TAG}
           }
 
           if ("${{ needs.detect-changes.outputs.payment }}" -eq "true") {
-            kubectl set image deployment/novera-payment-deployment payment-service=${DOCKER_USER}/novera-payment-service:${TAG}
+            kubectl set image deployment/payment-service payment-service=${DOCKER_USER}/novera-payment-service:${TAG}
           }
 
           if ("${{ needs.detect-changes.outputs.gateway }}" -eq "true") {
-            kubectl set image deployment/novera-gateway-deployment gateway-service=${DOCKER_USER}/novera-gateway-service:${TAG}
+            kubectl set image deployment/gateway-service gateway-service=${DOCKER_USER}/novera-gateway-service:${TAG}
           }
