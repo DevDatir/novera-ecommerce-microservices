@@ -299,26 +299,18 @@ jobs:
       - name: Calculate Version Tag
         id: version
         run: |
-          # 1. Get total workflow runs
           TOTAL_RUNS=${{ github.run_number }}
           
-          # 2. Subtract offset to align with your current release track.
-          # (If current TOTAL_RUNS is 16, offset of 14 makes adjusted count = 2 -> 0.2.2)
-          OFFSET=14
-          ADJUSTED_RUN=$(( TOTAL_RUNS - OFFSET ))
+          # Set OFFSET to 15 so your next run produces 0.2.2
+          OFFSET=15
+          PATCH=$(( TOTAL_RUNS - OFFSET ))
           
-          # Fallback check in case ADJUSTED_RUN is less than 1
-          if [ $ADJUSTED_RUN -lt 1 ]; then
-            ADJUSTED_RUN=1
+          if [ $PATCH -lt 1 ]; then
+            PATCH=1
           fi
 
-          # Calculate MINOR and PATCH
-          # Standard patch increment: 0.2.1, 0.2.2, ..., 0.2.9 -> 0.3.0
-          MINOR=$(( 2 + (ADJUSTED_RUN / 10) ))
-          PATCH=$(( ADJUSTED_RUN % 10 ))
-          TAG="0.${MINOR}.${PATCH}"
-          
-          echo "Calculated Tag: $TAG (Total Runs: $TOTAL_RUNS, Adjusted: $ADJUSTED_RUN)"
+          TAG="0.2.${PATCH}"
+          echo "Calculated Tag: $TAG"
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
 
       - name: Log in to Docker Hub
@@ -377,15 +369,15 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:${TAG} ./gateway-service
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:${TAG}
 
-  # ===================================================================
-  # 4. DEPLOYMENT: Runs on your Windows Self-Hosted Runner
+# ===================================================================
+  # 4. DEPLOYMENT: Runs natively on Windows Self-Hosted Runner
   # ===================================================================
   deploy-k8s:
     needs: [detect-changes, docker-build-push]
     if: github.ref == 'refs/heads/main' && needs.detect-changes.outputs.any_changed == 'true'
     runs-on: self-hosted
 
-    # Explicitly use Git Bash on your Windows Laptop runner
+    # Explicitly run PowerShell on Windows
     defaults:
       run:
         shell: powershell
@@ -400,33 +392,34 @@ jobs:
 
       - name: Update deployment images in Kubernetes
         run: |
-          TAG="${{ needs.docker-build-push.outputs.version_tag }}"
-          echo "Updating deployments to tag: ${TAG}"
+          $TAG = "${{ needs.docker-build-push.outputs.version_tag }}"
+          $DOCKER_USER = "${{ secrets.DOCKERHUB_USERNAME }}"
+          Write-Host "Updating deployments to tag: $TAG"
 
-          if [ "${{ needs.detect-changes.outputs.frontend }}" == "true" ]; then
-            kubectl set image deployment/novera-frontend-deployment frontend=${{ secrets.DOCKERHUB_USERNAME }}/novera-frontend:${TAG}
-          fi
+          if ("${{ needs.detect-changes.outputs.frontend }}" -eq "true") {
+            kubectl set image deployment/novera-frontend-deployment frontend=${DOCKER_USER}/novera-frontend:${TAG}
+          }
 
-          if [ "${{ needs.detect-changes.outputs.auth }}" == "true" ]; then
-            kubectl set image deployment/novera-auth-deployment auth-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-auth-service:${TAG}
-          fi
+          if ("${{ needs.detect-changes.outputs.auth }}" -eq "true") {
+            kubectl set image deployment/novera-auth-deployment auth-service=${DOCKER_USER}/novera-auth-service:${TAG}
+          }
 
-          if [ "${{ needs.detect-changes.outputs.product }}" == "true" ]; then
-            kubectl set image deployment/novera-product-deployment product-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-product-service:${TAG}
-          fi
+          if ("${{ needs.detect-changes.outputs.product }}" -eq "true") {
+            kubectl set image deployment/novera-product-deployment product-service=${DOCKER_USER}/novera-product-service:${TAG}
+          }
 
-          if [ "${{ needs.detect-changes.outputs.cart }}" == "true" ]; then
-            kubectl set image deployment/novera-cart-deployment cart-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-cart-service:${TAG}
-          fi
+          if ("${{ needs.detect-changes.outputs.cart }}" -eq "true") {
+            kubectl set image deployment/novera-cart-deployment cart-service=${DOCKER_USER}/novera-cart-service:${TAG}
+          }
 
-          if [ "${{ needs.detect-changes.outputs.order }}" == "true" ]; then
-            kubectl set image deployment/novera-order-deployment order-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-order-service:${TAG}
-          fi
+          if ("${{ needs.detect-changes.outputs.order }}" -eq "true") {
+            kubectl set image deployment/novera-order-deployment order-service=${DOCKER_USER}/novera-order-service:${TAG}
+          }
 
-          if [ "${{ needs.detect-changes.outputs.payment }}" == "true" ]; then
-            kubectl set image deployment/novera-payment-deployment payment-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-payment-service:${TAG}
-          fi
+          if ("${{ needs.detect-changes.outputs.payment }}" -eq "true") {
+            kubectl set image deployment/novera-payment-deployment payment-service=${DOCKER_USER}/novera-payment-service:${TAG}
+          }
 
-          if [ "${{ needs.detect-changes.outputs.gateway }}" == "true" ]; then
-            kubectl set image deployment/novera-gateway-deployment gateway-service=${{ secrets.DOCKERHUB_USERNAME }}/novera-gateway-service:${TAG}
-          fi
+          if ("${{ needs.detect-changes.outputs.gateway }}" -eq "true") {
+            kubectl set image deployment/novera-gateway-deployment gateway-service=${DOCKER_USER}/novera-gateway-service:${TAG}
+          }
