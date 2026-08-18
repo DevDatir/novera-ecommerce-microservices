@@ -1,0 +1,26 @@
+filebeat.inputs:
+  - type: filestream
+    id: docker-containers
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    parsers:
+      - container:
+          format: docker
+          stream: all
+
+processors:
+  - add_docker_metadata:
+      host: unix:///var/run/docker.sock
+  - drop_event:
+      when:
+        not:
+          or:
+            - equals:
+                container.name: product-service
+            - equals:
+                container.name: authentication-service
+            - equals:
+                container.name: cart-service
+
+output.logstash:
+  hosts: ["logstash:5044"]

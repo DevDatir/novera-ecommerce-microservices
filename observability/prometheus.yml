@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: product-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [product-service:8081]
+
+  - job_name: authentication-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [authentication-service:8080]
+
+  - job_name: cart-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [cart-service:8082]

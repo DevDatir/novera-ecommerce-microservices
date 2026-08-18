@@ -1,0 +1,27 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    uid: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+  - name: Tempo
+    type: tempo
+    uid: tempo
+    access: proxy
+    url: http://tempo:3200
+    jsonData:
+      tracesToLogsV2:
+        datasourceUid: elasticsearch
+        tags: [{ key: "service", value: "service" }]
+        filterByTraceID: true
+  - name: Elasticsearch
+    type: elasticsearch
+    uid: elasticsearch
+    access: proxy
+    url: http://elasticsearch:9200
+    jsonData:
+      index: "novera-*"
+      timeField: "@timestamp"

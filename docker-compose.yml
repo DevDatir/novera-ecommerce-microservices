@@ -4,8 +4,8 @@ services:
     container_name: postgres-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrey@1029
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
@@ -25,6 +25,10 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      AUTH_DB_URL: ${AUTH_DB_URL}
     ports:
       - "8080:8080"
     depends_on:
@@ -37,6 +41,9 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PRODUCT_DB_URL: ${PRODUCT_DB_URL}
     ports:
       - "8081:8081"
     depends_on:
@@ -49,6 +56,11 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      CART_DB_URL: jdbc:postgresql://postgres-db:5432/novera_cart_db
+      PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
     ports:
       - "8082:8082"
     depends_on:
@@ -61,6 +73,13 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ORDER_DB_URL: jdbc:postgresql://postgres-db:5432/novera_orders
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
+      CART_SERVICE_URL: ${CART_SERVICE_URL}
     ports:
       - "8083:8083"
     depends_on:
@@ -73,6 +92,13 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET}
+      PAYMENT_DB_URL: ${PAYMENT_DB_URL}
+      ORDER_SERVICE_URL: ${ORDER_SERVICE_URL}
     ports:
       - "8084:8084"
     depends_on:
@@ -85,6 +111,12 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      JWT_SECRET: ${JWT_SECRET}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
+      CART_SERVICE_URL: ${CART_SERVICE_URL}
+      ORDER_SERVICE_URL: ${ORDER_SERVICE_URL}
+      PAYMENT_SERVICE_URL: ${PAYMENT_SERVICE_URL}
     ports:
       - "8085:8085"
     depends_on:
