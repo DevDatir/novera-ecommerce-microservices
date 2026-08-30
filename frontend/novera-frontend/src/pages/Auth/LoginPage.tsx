@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContexts";
 import type { LoginRequest } from "../../types/auth";
 import shoeImage from "../../assets/novera_login_image.png";
 import Button from "../../components/ui/Button";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const LoginPage = () => {
 
       navigate("/");
     } catch (error) {
-      alert("Invalid email or password");
+      toast.error("Invalid email or password. Check your details and try again.");
     }
   };
 

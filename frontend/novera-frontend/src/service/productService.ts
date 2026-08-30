@@ -2,7 +2,7 @@ import axiosInstance from "../api/axios";
 import type { Product } from "../types/product";
 import type { PageResponse } from "../types/page";
 
-const PRODUCT_URL = import.meta.env.VITE_PRODUCT_API;
+const PRODUCT_URL = import.meta.env.VITE_PRODUCT_API || "";
 
 export const getProducts = async (
     page: number,

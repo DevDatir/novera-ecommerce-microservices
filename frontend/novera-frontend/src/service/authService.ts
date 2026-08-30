@@ -5,7 +5,7 @@ import type {
   AuthResponse,
 } from "../types/auth";
 
-const AUTH_URL = import.meta.env.VITE_AUTH_API;
+const AUTH_URL = import.meta.env.VITE_AUTH_API || "";
 
 export const login = async (
   request: LoginRequest

@@ -13,7 +13,7 @@ import type {
 } from "../types/payment";
 
 const PAYMENT_BASE_URL =
-    `${import.meta.env.VITE_PAYMENT_API}/api/payments`;
+    `${import.meta.env.VITE_PAYMENT_API || ""}/api/payments`;
 
 const createPayment = async (
     request: CreatePaymentRequest

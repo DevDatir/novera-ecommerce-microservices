@@ -6,7 +6,7 @@ import type {
 } from "../types/order";
 
 const ORDER_BASE_URL =
-    `${import.meta.env.VITE_ORDER_API}/api/orders`;
+    `${import.meta.env.VITE_ORDER_API || ""}/api/orders`;
 
 const placeOrder = async (
     request: PlaceOrderRequest
