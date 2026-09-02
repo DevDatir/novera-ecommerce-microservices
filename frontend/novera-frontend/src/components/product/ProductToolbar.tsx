@@ -1,5 +1,3 @@
-import { ArrowUpDown } from "lucide-react";
-
 interface Props {
   selectedCategory: number | null;
   selectedSort: string;
@@ -35,9 +33,8 @@ const ProductToolbar = ({ selectedCategory, selectedSort, selectedGender, onCate
 
       <label className="block text-sm font-extrabold text-slate-900">
         <span className="mb-3 block">Sort by</span>
-        <span className="relative block">
-          <ArrowUpDown size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" aria-hidden="true" />
-          <select value={selectedSort} onChange={(event) => onSortChange(event.target.value)} className="min-h-11 w-full appearance-none rounded-xl border border-slate-300 bg-white py-2 pl-11 pr-8 text-sm font-semibold text-slate-800 hover:border-primary-600 focus:border-primary-600 focus:outline-none lg:min-w-52">
+        <span className="block">
+          <select value={selectedSort} onChange={(event) => onSortChange(event.target.value)} className="min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:border-primary-600 focus:border-primary-600 focus:outline-none lg:min-w-52">
             {SORT_OPTIONS.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
           </select>
         </span>

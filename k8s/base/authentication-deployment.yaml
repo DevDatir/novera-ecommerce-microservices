@@ -3,7 +3,7 @@ kind: Deployment
 
 metadata:
   name: authentication-service
-  namespace: novera
+  # namespace: novera
 
 spec:
   replicas: 1

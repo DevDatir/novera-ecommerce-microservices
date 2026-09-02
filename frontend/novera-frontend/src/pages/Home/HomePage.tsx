@@ -136,9 +136,9 @@ const HomePage = () => {
                   className="
                     w-full sm:w-auto
                     inline-flex items-center justify-center gap-2
-                    bg-slate-950 text-white
+                    bg-primary-600 text-white
                     px-8 py-4 rounded-2xl font-bold text-base
-                    hover:bg-slate-800 hover:shadow-2xl hover:shadow-slate-950/25
+                    hover:bg-primary-700 hover:shadow-2xl hover:shadow-primary-900/25
                     transition-all duration-300 hover:-translate-y-1
                   "
                 >
@@ -359,9 +359,9 @@ const HomePage = () => {
               to="/products?sort=unitsSold,desc"
               className="
                 inline-flex items-center gap-2
-                bg-gray-900 text-white px-8 py-4 rounded-2xl
+                bg-primary-600 text-white px-8 py-4 rounded-2xl
                 font-bold text-base
-                hover:bg-gray-800 hover:shadow-xl
+                hover:bg-primary-700 hover:shadow-xl
                 transition-all duration-300 hover:-translate-y-0.5
               "
             >

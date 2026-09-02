@@ -3,7 +3,7 @@ kind: HorizontalPodAutoscaler
 
 metadata:
   name: authentication-service-hpa
-  namespace: novera
+  # namespace: novera
 
 spec:
   scaleTargetRef:

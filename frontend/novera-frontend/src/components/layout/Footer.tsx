@@ -3,7 +3,7 @@ import { Mail, Phone } from "lucide-react";
 
 const Footer = () => (
   <footer className="mt-auto border-t border-slate-200 bg-white text-slate-600">
-    <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-5 py-12 sm:px-8 md:grid-cols-3 lg:gap-20 lg:px-10 lg:py-14">
+    <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-10 px-6 py-12 sm:px-8 md:grid-cols-[1.35fr_1fr_1.2fr] md:gap-16 lg:px-10 lg:py-14">
       <div className="max-w-sm">
         <Link to="/" className="text-2xl font-extrabold tracking-tight text-slate-950">
           NOVERA
@@ -33,7 +33,7 @@ const Footer = () => (
         </ul>
       </div>
     </div>
-    <div className="border-t border-slate-200 px-5 py-5 text-center text-xs text-slate-500 sm:px-8">
+    <div className="border-t border-slate-200 px-6 py-5 text-center text-xs font-medium text-slate-600 sm:px-8">
       © {new Date().getFullYear()} Novera. All rights reserved.
     </div>
   </footer>

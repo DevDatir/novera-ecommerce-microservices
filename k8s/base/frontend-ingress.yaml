@@ -3,7 +3,7 @@ kind: Ingress
 
 metadata:
   name: novera-ingress
-  namespace: novera
+  # namespace: novera
 
 spec:
   ingressClassName: nginx

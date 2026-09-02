@@ -25,6 +25,10 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      AUTH_DB_URL: jdbc:postgresql://postgres-db:5432/postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrey@1029
+      JWT_SECRET: your-secret-key-here-make-it-long-enough-for-hs256
     ports:
       - "8080:8080"
     depends_on:
@@ -37,6 +41,9 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      PRODUCT_DB_URL: jdbc:postgresql://postgres-db:5432/postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrey@1029
     ports:
       - "8081:8081"
     depends_on:
@@ -49,6 +56,11 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      CART_DB_URL: jdbc:postgresql://postgres-db:5432/postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrey@1029
+      PRODUCT_SERVICE_URL: http://product-service:8081
+      JWT_SECRET: your-secret-key-here-make-it-long-enough-for-hs256
     ports:
       - "8082:8082"
     depends_on:
@@ -61,6 +73,13 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      ORDER_DB_URL: jdbc:postgresql://postgres-db:5432/postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrey@1029
+      AUTH_SERVICE_URL: http://authentication-service:8080
+      PRODUCT_SERVICE_URL: http://product-service:8081
+      CART_SERVICE_URL: http://cart-service:8082
+      JWT_SECRET: your-secret-key-here-make-it-long-enough-for-hs256
     ports:
       - "8083:8083"
     depends_on:
@@ -73,6 +92,13 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      PAYMENT_DB_URL: jdbc:postgresql://postgres-db:5432/postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrey@1029
+      ORDER_SERVICE_URL: http://order-service:8083
+      JWT_SECRET: your-secret-key-here-make-it-long-enough-for-hs256
+      RAZORPAY_KEY_ID: test_key
+      RAZORPAY_KEY_SECRET: test_secret
     ports:
       - "8084:8084"
     depends_on:
@@ -85,6 +111,12 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      AUTH_SERVICE_URL: http://authentication-service:8080
+      PRODUCT_SERVICE_URL: http://product-service:8081
+      CART_SERVICE_URL: http://cart-service:8082
+      ORDER_SERVICE_URL: http://order-service:8083
+      PAYMENT_SERVICE_URL: http://payment-service:8084
+      JWT_SECRET: your-secret-key-here-make-it-long-enough-for-hs256
     ports:
       - "8085:8085"
     depends_on:

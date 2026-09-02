@@ -69,9 +69,9 @@ const FeaturedProducts = () => {
             to="/products"
             className="
               inline-flex items-center gap-2
-              bg-gray-900 text-white px-6 py-3 rounded-2xl
+              bg-primary-600 text-white px-6 py-3 rounded-2xl
               font-bold text-sm
-              hover:bg-gray-800 transition-colors
+              hover:bg-primary-700 transition-colors
             "
           >
             View All Products <ArrowRight size={16} />
