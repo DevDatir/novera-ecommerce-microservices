@@ -1,0 +1,177 @@
+envVarGroups:
+  - name: novera-shared
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: novera-postgres
+    databaseName: postgres
+    user: postgres
+    plan: free
+    region: oregon
+
+services:
+  # ── Authentication Service ──────────────────────────────────────────────────
+  - type: web
+    name: novera-auth
+    plan: free
+    region: oregon
+    runtime: docker
+    dockerfilePath: ./authentication-service/Dockerfile
+    dockerContext: ./authentication-service
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: AUTH_DB_URL
+        sync: false          # set after DB is ready  →  jdbc:postgresql://<host>:5432/novera_auth_db
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: novera-postgres
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: novera-postgres
+          property: password
+      - fromGroup: novera-shared
+
+  # ── Product Service ─────────────────────────────────────────────────────────
+  - type: web
+    name: novera-product
+    plan: free
+    region: oregon
+    runtime: docker
+    dockerfilePath: ./product-service/Dockerfile
+    dockerContext: ./product-service
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: PRODUCT_DB_URL
+        sync: false          # jdbc:postgresql://<host>:5432/productdb
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: novera-postgres
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: novera-postgres
+          property: password
+      - fromGroup: novera-shared
+
+  # ── Cart Service ────────────────────────────────────────────────────────────
+  - type: web
+    name: novera-cart
+    plan: free
+    region: oregon
+    runtime: docker
+    dockerfilePath: ./cart-service/Dockerfile
+    dockerContext: ./cart-service
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: CART_DB_URL
+        sync: false          # jdbc:postgresql://<host>:5432/novera_cart_db
+      - key: PRODUCT_SERVICE_URL
+        sync: false          # https://novera-product.onrender.com
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: novera-postgres
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: novera-postgres
+          property: password
+      - fromGroup: novera-shared
+
+  # ── Order Service ───────────────────────────────────────────────────────────
+  - type: web
+    name: novera-order
+    plan: free
+    region: oregon
+    runtime: docker
+    dockerfilePath: ./order-service/Dockerfile
+    dockerContext: ./order-service
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: ORDER_DB_URL
+        sync: false          # jdbc:postgresql://<host>:5432/novera_orders
+      - key: AUTH_SERVICE_URL
+        sync: false          # https://novera-auth.onrender.com
+      - key: PRODUCT_SERVICE_URL
+        sync: false          # https://novera-product.onrender.com
+      - key: CART_SERVICE_URL
+        sync: false          # https://novera-cart.onrender.com
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: novera-postgres
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: novera-postgres
+          property: password
+      - fromGroup: novera-shared
+
+  # ── Payment Service ─────────────────────────────────────────────────────────
+  - type: web
+    name: novera-payment
+    plan: free
+    region: oregon
+    runtime: docker
+    dockerfilePath: ./paymnet-service/Dockerfile
+    dockerContext: ./paymnet-service
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: PAYMENT_DB_URL
+        sync: false          # jdbc:postgresql://<host>:5432/novera_payment_db
+      - key: ORDER_SERVICE_URL
+        sync: false          # https://novera-order.onrender.com
+      - key: RAZORPAY_KEY_ID
+        sync: false          # your Razorpay key id
+      - key: RAZORPAY_KEY_SECRET
+        sync: false          # your Razorpay key secret
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: novera-postgres
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: novera-postgres
+          property: password
+      - fromGroup: novera-shared
+
+  # ── Gateway Service (public entry point) ────────────────────────────────────
+  - type: web
+    name: novera-gateway
+    plan: free
+    region: oregon
+    runtime: docker
+    dockerfilePath: ./gateway-service/Dockerfile
+    dockerContext: ./gateway-service
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: AUTH_SERVICE_URL
+        sync: false          # https://novera-auth.onrender.com
+      - key: PRODUCT_SERVICE_URL
+        sync: false          # https://novera-product.onrender.com
+      - key: CART_SERVICE_URL
+        sync: false          # https://novera-cart.onrender.com
+      - key: ORDER_SERVICE_URL
+        sync: false          # https://novera-order.onrender.com
+      - key: PAYMENT_SERVICE_URL
+        sync: false          # https://novera-payment.onrender.com
+      - fromGroup: novera-shared
+
+  # ── Frontend ────────────────────────────────────────────────────────────────
+  - type: web
+    name: novera-frontend
+    plan: free
+    region: oregon
+    runtime: docker
+    dockerfilePath: ./frontend/novera-frontend/Dockerfile.render
+    dockerContext: ./frontend/novera-frontend
+    envVars:
+      - key: GATEWAY_URL
+        value: https://novera-gateway.onrender.com  # update if you renamed the gateway service
