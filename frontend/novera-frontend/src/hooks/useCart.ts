@@ -7,12 +7,13 @@ import type {
 
 const CART_QUERY_KEY = ["cart"];
 
-export const useCart = () => {
+export const useCart = (enabled = true) => {
   const queryClient = useQueryClient();
 
   const cartQuery = useQuery({
     queryKey: CART_QUERY_KEY,
     queryFn: cartService.getCart,
+    enabled,
   });
 
   const addItemMutation = useMutation({

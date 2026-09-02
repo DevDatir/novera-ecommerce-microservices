@@ -8,6 +8,8 @@ const ProductImageCarousel = ({ images }: Props) => {
 
     const [selectedImage, setSelectedImage] = useState(0);
 
+    const selected = images[selectedImage] || "/placeholder-shoe.jpg";
+
     return (
 
         <div>
@@ -16,9 +18,9 @@ const ProductImageCarousel = ({ images }: Props) => {
 
                 <img
 
-                    src={images[selectedImage]}
+                    src={selected}
 
-                    alt="Product"
+                    alt="Selected product view"
 
                     className="object-contain h-full transition"
 
@@ -36,11 +38,12 @@ const ProductImageCarousel = ({ images }: Props) => {
 
                         onClick={() => setSelectedImage(index)}
 
-                        className={`border rounded-xl overflow-hidden transition
+                        aria-label={`View product image ${index + 1}`}
+                        className={`min-h-11 min-w-11 border rounded-xl overflow-hidden transition
 
                         ${
                             selectedImage === index
-                                ? "border-blue-600 border-2"
+                                ? "border-primary-600 border-2"
                                 : "border-gray-200"
                         }
 

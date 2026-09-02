@@ -5,7 +5,7 @@ import type {
   UpdateCartItemRequest,
 } from "../types/cart";
 
-const CART_BASE_URL = `${import.meta.env.VITE_CART_API}/api/cart`;
+const CART_BASE_URL = `${import.meta.env.VITE_CART_API || ""}/api/cart`;
 
 const getCart = async (): Promise<CartResponse> => {
   const { data } = await axiosInstance.get<CartResponse>(CART_BASE_URL);

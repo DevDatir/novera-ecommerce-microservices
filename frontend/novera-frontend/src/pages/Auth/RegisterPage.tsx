@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContexts";
 import type { RegisterRequest } from "../../types/auth";
 import shoeImage from "../../assets/novera_login_image.png";
 import Button from "../../components/ui/Button";
+import toast from "react-hot-toast";
 
 
 const RegisterPage = () => {
@@ -28,7 +29,7 @@ const RegisterPage = () => {
 
       navigate("/");
     } catch (error) {
-      alert("Registration failed");
+      toast.error("Registration failed. Check your details and try again.");
     }
   };
 

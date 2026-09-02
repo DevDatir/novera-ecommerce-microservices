@@ -10,14 +10,13 @@ import App from "./App";
 
 const queryClient = new QueryClient();
 
-<Toaster position="top-right" />
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
    <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <BrowserRouter>
         <App />
+        <Toaster position="top-right" toastOptions={{ duration: 3500 }} />
       </BrowserRouter>
     </AuthProvider>
   </QueryClientProvider>

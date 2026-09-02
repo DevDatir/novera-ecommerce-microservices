@@ -5,7 +5,7 @@ import type {
 } from "../types/address";
 
 const ADDRESS_BASE_URL =
-  `${import.meta.env.VITE_AUTH_API}/api/addresses`;
+  `${import.meta.env.VITE_AUTH_API || ""}/api/addresses`;
 
 const getAddresses = async (): Promise<AddressResponse[]> => {
   const { data } = await axiosInstance.get<AddressResponse[]>(
