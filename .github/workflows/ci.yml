@@ -185,3 +185,4 @@ jobs:
             kubectl set image "deployment/$($image.deployment)" "$($image.deployment)=$env:DOCKER_USER/$($image.image):$($image.tag)" -n novera
             kubectl rollout status "deployment/$($image.deployment)" -n novera --timeout=180s
           }
+
