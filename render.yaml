@@ -18,8 +18,8 @@ services:
     plan: free
     region: oregon
     runtime: docker
-    dockerfilePath: ./authentication-service/Dockerfile
-    dockerContext: ./authentication-service
+    dockerfilePath: authentication-service/Dockerfile
+    dockerContext: authentication-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -41,8 +41,8 @@ services:
     plan: free
     region: oregon
     runtime: docker
-    dockerfilePath: ./product-service/Dockerfile
-    dockerContext: ./product-service
+    dockerfilePath: product-service/Dockerfile
+    dockerContext: product-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -64,8 +64,8 @@ services:
     plan: free
     region: oregon
     runtime: docker
-    dockerfilePath: ./cart-service/Dockerfile
-    dockerContext: ./cart-service
+    dockerfilePath: cart-service/Dockerfile
+    dockerContext: cart-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -89,8 +89,8 @@ services:
     plan: free
     region: oregon
     runtime: docker
-    dockerfilePath: ./order-service/Dockerfile
-    dockerContext: ./order-service
+    dockerfilePath: order-service/Dockerfile
+    dockerContext: order-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -118,8 +118,8 @@ services:
     plan: free
     region: oregon
     runtime: docker
-    dockerfilePath: ./paymnet-service/Dockerfile
-    dockerContext: ./paymnet-service
+    dockerfilePath: paymnet-service/Dockerfile
+    dockerContext: paymnet-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -147,8 +147,8 @@ services:
     plan: free
     region: oregon
     runtime: docker
-    dockerfilePath: ./gateway-service/Dockerfile
-    dockerContext: ./gateway-service
+    dockerfilePath: gateway-service/Dockerfile
+    dockerContext: gateway-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -170,8 +170,8 @@ services:
     plan: free
     region: oregon
     runtime: docker
-    dockerfilePath: ./frontend/novera-frontend/Dockerfile.render
-    dockerContext: ./frontend/novera-frontend
+    dockerfilePath: frontend/novera-frontend/Dockerfile.render
+    dockerContext: frontend/novera-frontend
     envVars:
       - key: GATEWAY_URL
         value: https://novera-gateway.onrender.com  # update if you renamed the gateway service
