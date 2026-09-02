@@ -6,8 +6,8 @@ envVarGroups:
 
 databases:
   - name: novera-postgres
-    databaseName: postgres
-    user: postgres
+    databaseName: novera_db
+    user: novera_user
     plan: free
     region: oregon
 
