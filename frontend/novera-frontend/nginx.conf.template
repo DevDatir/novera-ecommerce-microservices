@@ -5,13 +5,18 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
+    # DNS resolver so nginx can resolve external domains or dynamic proxy targets
+    resolver 8.8.8.8 1.1.1.1 valid=300s;
+    resolver_timeout 5s;
+
     location / {
         try_files $uri $uri/ /index.html;
     }
 
     location /api/ {
         proxy_pass $GATEWAY_URL/api/;
-        proxy_set_header Host $host;
+        proxy_ssl_server_name on;
+        proxy_set_header Host $proxy_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
