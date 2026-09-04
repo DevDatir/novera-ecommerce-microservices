@@ -67,7 +67,7 @@ const CheckoutPage = () => {
 
     if (cartLoading || addressLoading) {
         return (
-            <div className="p-10 text-center">
+            <div className="p-20 text-center text-ink-400">
                 Loading...
             </div>
         );
@@ -75,7 +75,7 @@ const CheckoutPage = () => {
 
     if (!cart || cart.items.length === 0) {
         return (
-            <div className="p-10 text-center">
+            <div className="p-20 text-center text-ink-400">
                 Your cart is empty.
             </div>
         );
@@ -181,18 +181,18 @@ const CheckoutPage = () => {
 
     return (
 
-        <div className="max-w-7xl mx-auto px-6 py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
 
             <div className="mb-6">
                 <button
                     type="button"
                     onClick={() => navigate("/cart")}
-                    className="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700 transition mb-2"
+                    className="inline-flex items-center text-sm font-semibold text-ink-500 hover:text-ink-900 transition mb-2"
                 >
-                    &larr; Back to Cart
+                    &larr; Back to cart
                 </button>
 
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="font-display text-3xl text-ink-900">
                     Checkout
                 </h1>
             </div>
@@ -207,16 +207,17 @@ const CheckoutPage = () => {
 
                         <div className="flex justify-between items-center mb-4">
 
-                            <h2 className="text-2xl font-semibold">
-                                Shipping Address
+                            <h2 className="text-xl font-semibold text-ink-900">
+                                Shipping address
                             </h2>
 
                             <Button
+                                size="sm"
                                 onClick={() =>
                                     setIsModalOpen(true)
                                 }
                             >
-                                + Add Address
+                                + Add address
                             </Button>
 
                         </div>
@@ -237,8 +238,8 @@ const CheckoutPage = () => {
 
                     <div>
 
-                        <h2 className="text-2xl font-semibold mb-4">
-                            Order Items
+                        <h2 className="text-xl font-semibold text-ink-900 mb-4">
+                            Order items
                         </h2>
 
                         <div className="space-y-4">

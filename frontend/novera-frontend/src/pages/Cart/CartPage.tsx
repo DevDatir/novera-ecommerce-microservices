@@ -4,7 +4,7 @@ import Spinner from "../../components/ui/Spinner";
 import EmptyCart from "../../components/cart/EmptyCart";
 import CartSummary from "../../components/cart/CartSummary";
 import CartItem from "../../components/cart/CartItem";
-import { Search } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -27,13 +27,13 @@ const CartPage = () => {
   if (isError) {
     return (
       <div className="py-20 text-center animate-fade-in">
-        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 mb-4">
+        <div className="inline-flex h-16 w-16 items-center justify-center bg-red-50 mb-4">
           <Search className="h-8 w-8 text-red-500" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="font-display text-3xl text-ink-900">
           Failed to load cart
         </h1>
-        <p className="text-sm text-gray-500 mt-4">
+        <p className="text-sm text-ink-400 mt-4">
           We encountered an error loading your cart. Please refresh or try again.
         </p>
       </div>
@@ -59,17 +59,17 @@ const CartPage = () => {
       <button
         type="button"
         onClick={() => navigate("/products")}
-        className="inline-flex items-center text-sm font-semibold text-primary-600 hover:text-primary-700 transition mb-2"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-ink-500 hover:text-ink-900 transition mb-2"
       >
-        &larr; Continue Shopping
+        <ArrowLeft size={16} /> Continue shopping
       </button>
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-black text-gray-900">
-          Your Cart
+        <h1 className="font-display text-3xl sm:text-4xl text-ink-900">
+          Your cart
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-ink-400 mt-1">
           {totalItems} {totalItems === 1 ? 'item' : 'items'} in your cart
         </p>
       </div>

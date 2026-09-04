@@ -1,4 +1,5 @@
 import Button from "../ui/Button";
+import { formatPrice } from "../../lib/utils";
 
 interface CartSummaryProps {
   subtotal: number;
@@ -13,79 +14,38 @@ const CheckoutSummary = ({
   loading,
   onCheckout,
 }: CartSummaryProps) => {
-
     return (
-
-        <div className="rounded-2xl border p-6 h-fit sticky top-24">
-
-            <h2 className="text-2xl font-bold mb-6">
-                Order Summary
+        <div className="border border-ink-100 bg-white p-6 h-fit sticky top-24">
+            <h2 className="font-display text-xl text-ink-900 mb-6">
+                Order summary
             </h2>
 
-            <div className="space-y-4">
-
-                <div className="flex justify-between">
-
-                    <span>
-
-                        Items ({totalItems})
-
-                    </span>
-
-                    <span>
-
-                        ₹{subtotal}
-
-                    </span>
-
+            <div className="space-y-3 text-sm">
+                <div className="flex justify-between text-ink-500">
+                    <span>Items ({totalItems})</span>
+                    <span className="font-semibold text-ink-900">{formatPrice(subtotal)}</span>
                 </div>
 
-                <div className="flex justify-between">
-
-                    <span>
-
-                        Shipping
-
-                    </span>
-
-                    <span className="text-green-600">
-
-                        FREE
-
-                    </span>
-
+                <div className="flex justify-between text-ink-500">
+                    <span>Shipping</span>
+                    <span className="text-pine-600 font-bold text-xs">FREE</span>
                 </div>
 
-                <hr />
-
-                <div className="flex justify-between text-xl font-bold">
-
-                    <span>
-
-                        Total
-
-                    </span>
-
-                    <span>
-
-                        ₹{subtotal}
-
-                    </span>
-
+                <div className="flex justify-between text-lg font-display text-ink-900 pt-3 border-t border-ink-100">
+                    <span>Total</span>
+                    <span>{formatPrice(subtotal)}</span>
                 </div>
-
             </div>
 
             <Button
                 className="w-full mt-8"
                 disabled={loading}
+                loading={loading}
                 onClick={onCheckout}
             >
-                Place Order
+                Place order
             </Button>
-
         </div>
-
     );
 };
 

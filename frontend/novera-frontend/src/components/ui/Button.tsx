@@ -12,28 +12,28 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<string, string> = {
   primary:
-    "bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-sm hover:shadow-md",
+    "bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700",
   secondary:
-    "bg-accent-500 text-white hover:bg-accent-600 shadow-sm hover:shadow-md",
+    "bg-ink-900 text-white hover:bg-ink-700",
   danger:
-    "bg-red-600 text-white hover:bg-red-700 shadow-sm",
+    "bg-red-600 text-white hover:bg-red-700",
   ghost:
-    "bg-transparent text-gray-700 hover:bg-gray-100",
+    "bg-transparent text-ink-700 hover:bg-ink-50",
   outline:
-    "bg-transparent border-2 border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50",
+    "bg-transparent border border-ink-900 text-ink-900 hover:bg-ink-900 hover:text-white",
 };
 
 const sizeClasses: Record<string, string> = {
-  sm: "px-3 py-1.5 text-sm rounded-lg",
-  md: "px-4 py-2.5 text-sm rounded-xl",
-  lg: "px-6 py-3.5 text-base rounded-xl",
-  xl: "px-8 py-4 text-lg rounded-2xl",
+  sm: "px-3 py-1.5 text-sm rounded-sm",
+  md: "px-4 py-2.5 text-sm rounded-md",
+  lg: "px-6 py-3.5 text-base rounded-md",
+  xl: "px-8 py-4 text-lg rounded-md",
 };
 
 const Button = ({
   children,
   loading,
-  loadingText = "Please wait...",
+  loadingText = "Please wait…",
   className = "",
   variant = "primary",
   size = "lg",
@@ -48,7 +48,7 @@ const Button = ({
       disabled={loading || disabled}
       className={`
         inline-flex items-center justify-center gap-2
-        font-semibold transition-all duration-200
+        font-semibold tracking-tight transition-colors duration-150
         disabled:opacity-50 disabled:cursor-not-allowed
         ${variantClasses[variant]}
         ${sizeClasses[size]}

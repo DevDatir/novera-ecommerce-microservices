@@ -16,7 +16,7 @@ const Spinner = ({ size = "md", className }: SpinnerProps) => {
     <div className="flex justify-center items-center py-12">
       <div
         className={clsx(
-          "animate-spin rounded-full border-4 border-gray-200 border-t-primary-600",
+          "animate-spin rounded-full border-4 border-ink-100 border-t-primary-500",
           sizeClasses[size],
           className
         )}

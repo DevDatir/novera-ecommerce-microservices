@@ -11,15 +11,6 @@ data:
         root /usr/share/nginx/html;
         index index.html;
 
-        # Disable gzip so Nginx can filter text inside JS bundles
-        gzip off;
-
-        # Replace any variation of localhost
-        sub_filter 'http://localhost:8085' '';
-        sub_filter 'http://localhost' '';
-        sub_filter_once off;
-        sub_filter_types *;
-
         location / {
             try_files $uri $uri/ /index.html;
         }

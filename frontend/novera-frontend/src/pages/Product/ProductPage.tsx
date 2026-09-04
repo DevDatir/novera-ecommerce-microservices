@@ -80,14 +80,14 @@ const ProductsPage = () => {
     searchInput !== "" || category !== null || gender !== null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-2">
-            All Products
+          <h1 className="font-display text-3xl sm:text-4xl text-ink-900 mb-2">
+            All products
           </h1>
-          <p className="text-gray-500">
+          <p className="text-ink-400">
             {products?.totalElements || 0} shoes available
           </p>
         </div>
@@ -97,7 +97,7 @@ const ProductsPage = () => {
           <div className="relative">
             <Search
               size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-300"
             />
             <input
               type="search"
@@ -111,10 +111,10 @@ const ProductsPage = () => {
               placeholder="Search for shoes..."
               className="
                 w-full pl-12 pr-12 py-3.5
-                bg-white border-2 border-gray-200
-                rounded-2xl text-sm
-                focus:outline-none focus:border-primary-400 focus:ring-4 focus:ring-primary-100
-                transition-all duration-200
+                bg-white border border-ink-200
+                rounded-md text-sm
+                focus:outline-none focus:border-primary-400
+                transition-colors duration-150
               "
             />
             {searchInput && (
@@ -123,10 +123,7 @@ const ProductsPage = () => {
                   setSearchInput("");
                   setPage(0);
                 }}
-                className="
-                  absolute right-4 top-1/2 -translate-y-1/2
-                  text-gray-400 hover:text-gray-600
-                "
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-ink-300 hover:text-ink-600"
               >
                 <X size={18} />
               </button>
@@ -159,26 +156,26 @@ const ProductsPage = () => {
 
         {/* Active Filters Badge */}
         {hasActiveFilters && (
-          <div className="mb-6 flex items-center gap-3">
-            <span className="text-sm text-gray-600">Active filters:</span>
+          <div className="mb-6 flex flex-wrap items-center gap-2">
+            <span className="text-sm text-ink-500">Active filters:</span>
             {searchInput && (
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary-50 text-primary-700 text-xs font-semibold rounded-lg">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-sand-100 text-ink-700 text-xs font-semibold">
                 Search: "{searchInput}"
               </span>
             )}
             {category && (
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary-50 text-primary-700 text-xs font-semibold rounded-lg">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-sand-100 text-ink-700 text-xs font-semibold">
                 Category filter
               </span>
             )}
             {gender && (
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary-50 text-primary-700 text-xs font-semibold rounded-lg">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-sand-100 text-ink-700 text-xs font-semibold">
                 Gender: {gender}
               </span>
             )}
             <button
               onClick={handleClearFilters}
-              className="text-xs font-semibold text-gray-500 hover:text-gray-700 underline"
+              className="text-xs font-semibold text-ink-500 hover:text-ink-800 underline"
             >
               Clear all
             </button>
