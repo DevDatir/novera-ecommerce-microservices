@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Heart, ShoppingBag, Star } from "lucide-react";
+import { Star, ShoppingBag } from "lucide-react";
 import type { Product } from "../../types/product";
 import { formatPrice } from "../../lib/utils";
 
@@ -14,109 +14,55 @@ const ProductCard = ({ product, priority = false }: ProductCardProps) => {
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-]/g, "");
 
-  const formatRating = (rating: number) => {
-    return rating.toFixed(1);
-  };
-
   return (
-    <Link
-      to={`/products/${product.id}/${slug}`}
-      className="group block"
-    >
-      <div className="relative bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-xs hover:shadow-2xl hover:border-gray-200 transition-all duration-300 ease-out">
-        {/* Badge */}
-        {product.stockQuantity === 0 && (
-          <span className="absolute top-3 left-3 z-20 bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-lg">
-            Sold Out
-          </span>
-        )}
-        {product.unitsSold > 100 && product.stockQuantity > 0 && (
-          <span className="absolute top-3 left-3 z-20 bg-emerald-600 text-white text-xs font-bold px-2.5 py-1 rounded-lg">
-            Bestseller
-          </span>
-        )}
-
-        {/* Favorite button */}
-        <button
-          type="button"
-          aria-label="Add to wishlist"
-          className="absolute top-3 right-3 z-20 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white"
-          onClick={(e) => e.preventDefault()}
-        >
-          <Heart
-            size={16}
-            className="text-gray-600 hover:text-red-500 transition-colors"
-          />
-        </button>
-
+    <Link to={`/products/${product.id}/${slug}`} className="group block">
+      <div className="relative overflow-hidden border border-ink-100 bg-white transition-colors duration-200 hover:border-ink-300">
         {/* Image */}
-        <div className="relative h-72 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="relative aspect-square overflow-hidden bg-sand-100">
+          {product.stockQuantity === 0 && (
+            <span className="absolute top-3 left-3 z-10 bg-ink-900 text-white text-[11px] font-bold uppercase px-2 py-1">
+              Sold out
+            </span>
+          )}
+          {product.unitsSold > 100 && product.stockQuantity > 0 && (
+            <span className="absolute top-3 left-3 z-10 bg-pine-500 text-white text-[11px] font-bold uppercase px-2 py-1">
+              Bestseller
+            </span>
+          )}
+
           <img
             src={product.imageUrls[0] || "/placeholder-shoe.jpg"}
             alt={product.name}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
-            className={`
-              w-full h-full object-contain
-              transition-transform duration-500 ease-out
-              group-hover:scale-110
-            `}
+            className="w-full h-full object-contain p-6 transition-transform duration-500 ease-out group-hover:scale-105"
           />
-          {/* Quick add to bag overlay */}
-          <div
-            className="
-              absolute inset-x-0 bottom-0
-              flex justify-center pb-4
-              opacity-0 translate-y-2
-              group-hover:opacity-100 group-hover:translate-y-0
-              transition-all duration-300
-            "
-          >
-            <span
-              className="
-                inline-flex items-center gap-2
-                bg-gray-900 text-white text-sm font-semibold
-                px-4 py-2 rounded-full shadow-lg
-              "
-            >
-              <ShoppingBag size={14} />
-              Quick View
-            </span>
+
+          {/* Add to bag reveal */}
+          <div className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 bg-ink-900 py-3 text-white text-sm font-semibold translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+            <ShoppingBag size={14} />
+            View product
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-5">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-primary-600 uppercase tracking-wide">
-              {product.category}
-            </span>
-            <span className="text-xs text-gray-400 capitalize">
-              {product.gender}
+        <div className="p-4">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-xs text-ink-400">{product.category} · {product.gender}</p>
+              <h2 className="mt-0.5 font-semibold text-ink-900 leading-snug line-clamp-1">
+                {product.name}
+              </h2>
+            </div>
+            <span className="flex items-center gap-1 shrink-0 text-xs font-semibold text-ink-600 mt-0.5">
+              <Star size={12} className="text-primary-500 fill-primary-500" />
+              {product.rating.toFixed(1)}
             </span>
           </div>
 
-          <h2 className="font-bold text-lg text-gray-900 line-clamp-1 group-hover:text-primary-700 transition-colors">
-            {product.name}
-          </h2>
-
-          <div className="mt-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-extrabold text-gray-900">
-                {formatPrice(product.price)}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-1.5">
-              <Star
-                size={14}
-                className="text-amber-400 fill-amber-400"
-              />
-              <span className="text-sm font-semibold text-gray-700">
-                {formatRating(product.rating)}
-              </span>
-            </div>
-          </div>
+          <p className="mt-2 font-display text-lg text-ink-900">
+            {formatPrice(product.price)}
+          </p>
         </div>
       </div>
     </Link>

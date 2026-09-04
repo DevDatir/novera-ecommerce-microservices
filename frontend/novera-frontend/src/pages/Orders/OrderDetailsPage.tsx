@@ -24,13 +24,13 @@ const OrderDetailsPage = () => {
     if (isError || !order) {
         return (
             <div className="max-w-4xl mx-auto py-20 px-6 text-center space-y-4">
-                <h2 className="text-2xl font-bold text-gray-900">Order Not Found</h2>
-                <p className="text-gray-500">
+                <h2 className="font-display text-2xl text-ink-900">Order not found</h2>
+                <p className="text-ink-500">
                     We couldn't find the requested order details.
                 </p>
                 <div className="pt-4 max-w-xs mx-auto">
                     <Button onClick={() => navigate("/orders")}>
-                        Back to Orders
+                        Back to orders
                     </Button>
                 </div>
             </div>
@@ -58,26 +58,26 @@ const OrderDetailsPage = () => {
         order.orderStatus !== "CANCELLED";
 
     return (
-        <div className="max-w-4xl mx-auto py-12 px-6 space-y-8">
-            <div className="flex items-center justify-between">
+        <div className="max-w-4xl mx-auto py-10 sm:py-12 px-4 sm:px-6 space-y-8">
+            <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <button
                         type="button"
                         onClick={() => navigate("/orders")}
-                        className="text-sm font-semibold text-blue-600 hover:underline mb-2 inline-block"
+                        className="text-sm font-semibold text-ink-500 hover:text-ink-900 mb-2 inline-block"
                     >
-                        &larr; Back to All Orders
+                        &larr; Back to all orders
                     </button>
-                    <h1 className="text-3xl font-bold text-gray-900">
+                    <h1 className="font-display text-3xl text-ink-900">
                         Order #{order.id}
                     </h1>
                 </div>
 
                 <div className="text-right">
-                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider block">
-                        Order Status
+                    <span className="text-xs font-semibold text-ink-400 block">
+                        Order status
                     </span>
-                    <span className="inline-block mt-1 px-3 py-1 bg-blue-50 text-blue-700 font-semibold text-sm rounded-full border border-blue-200">
+                    <span className="inline-block mt-1 px-3 py-1 bg-sand-100 text-ink-800 font-semibold text-sm border border-ink-200">
                         {order.orderStatus}
                     </span>
                 </div>
@@ -86,33 +86,33 @@ const OrderDetailsPage = () => {
             <div className="grid md:grid-cols-3 gap-8">
                 {/* ITEMS LIST */}
                 <div className="md:col-span-2 space-y-4">
-                    <h2 className="text-xl font-bold text-gray-900">Items Ordered</h2>
+                    <h2 className="text-lg font-semibold text-ink-900">Items ordered</h2>
 
-                    <div className="bg-white border border-gray-200 rounded-2xl divide-y divide-gray-100 overflow-hidden shadow-sm">
+                    <div className="bg-white border border-ink-100 divide-y divide-ink-100">
                         {order.items.map((item, idx) => (
                             <div key={idx} className="p-4 flex items-center gap-4">
                                 {item.imageUrls && item.imageUrls.length > 0 ? (
                                     <img
                                         src={item.imageUrls[0]}
                                         alt={item.productName}
-                                        className="w-16 h-16 object-cover rounded-xl border border-gray-100"
+                                        className="w-16 h-16 object-contain bg-sand-100 p-1.5"
                                     />
                                 ) : (
-                                    <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 text-xs">
-                                        No Image
+                                    <div className="w-16 h-16 bg-sand-100 flex items-center justify-center text-ink-400 text-xs">
+                                        No image
                                     </div>
                                 )}
 
                                 <div className="flex-1">
-                                    <h4 className="font-bold text-gray-900">
+                                    <h4 className="font-semibold text-ink-900">
                                         {item.productName}
                                     </h4>
-                                    <p className="text-sm text-gray-500">
+                                    <p className="text-sm text-ink-400">
                                         Qty: {item.quantity} &times; ₹{item.priceAtPurchase}
                                     </p>
                                 </div>
 
-                                <div className="text-right font-bold text-gray-900">
+                                <div className="text-right font-display text-ink-900">
                                     ₹{item.subtotal}
                                 </div>
                             </div>
@@ -122,41 +122,41 @@ const OrderDetailsPage = () => {
 
                 {/* SUMMARY & ADDRESS */}
                 <div className="space-y-6">
-                    <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
-                        <h2 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
-                            Payment Details
+                    <div className="bg-white border border-ink-100 p-6 space-y-4">
+                        <h2 className="text-base font-semibold text-ink-900 border-b border-ink-100 pb-3">
+                            Payment details
                         </h2>
 
                         <div className="flex justify-between text-sm">
-                            <span className="text-gray-500">Payment Status:</span>
-                            <span className="font-semibold text-emerald-600">
+                            <span className="text-ink-500">Payment status</span>
+                            <span className="font-semibold text-pine-600">
                                 {order.paymentStatus}
                             </span>
                         </div>
 
-                        <div className="flex justify-between text-base font-bold text-gray-900 pt-2 border-t border-gray-100">
-                            <span>Total Amount:</span>
+                        <div className="flex justify-between text-base font-display text-ink-900 pt-2 border-t border-ink-100">
+                            <span>Total amount</span>
                             <span>₹{order.totalAmount}</span>
                         </div>
                     </div>
 
                     {order.shippingAddress && (
-                        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-3">
-                            <h2 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
-                                Shipping Address
+                        <div className="bg-white border border-ink-100 p-6 space-y-3">
+                            <h2 className="text-base font-semibold text-ink-900 border-b border-ink-100 pb-3">
+                                Shipping address
                             </h2>
 
-                            <p className="font-semibold text-gray-900">
+                            <p className="font-semibold text-ink-900">
                                 {order.shippingAddress.fullName}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-ink-500">
                                 {order.shippingAddress.addressLine1}
                                 {order.shippingAddress.addressLine2 && `, ${order.shippingAddress.addressLine2}`}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-ink-500">
                                 {order.shippingAddress.city}, {order.shippingAddress.state} - {order.shippingAddress.postalCode}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-ink-500">
                                 Phone: {order.shippingAddress.phone}
                             </p>
                         </div>
@@ -167,9 +167,9 @@ const OrderDetailsPage = () => {
                             variant="danger"
                             onClick={handleCancelOrder}
                             loading={cancelOrderMutation.isPending}
-                            className="bg-red-600 hover:bg-red-700 text-white"
+                            className="w-full"
                         >
-                            Cancel Order
+                            Cancel order
                         </Button>
                     )}
                 </div>

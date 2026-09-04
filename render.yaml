@@ -17,9 +17,9 @@ services:
     name: novera-auth
     plan: free
     region: oregon
-    runtime: docker
-    dockerfilePath: authentication-service/Dockerfile
-    dockerContext: authentication-service
+    runtime: image
+    image:
+      url: docker.io/devdatir/novera-auth-service:0.2.5
     envVars:
       - key: PORT
         value: 8080
@@ -42,9 +42,9 @@ services:
     name: novera-product
     plan: free
     region: oregon
-    runtime: docker
-    dockerfilePath: product-service/Dockerfile
-    dockerContext: product-service
+    runtime: image
+    image:
+      url: docker.io/devdatir/novera-product-service:0.2.5
     envVars:
       - key: PORT
         value: 8081
@@ -67,9 +67,9 @@ services:
     name: novera-cart
     plan: free
     region: oregon
-    runtime: docker
-    dockerfilePath: cart-service/Dockerfile
-    dockerContext: cart-service
+    runtime: image
+    image:
+      url: docker.io/devdatir/novera-cart-service:0.2.5
     envVars:
       - key: PORT
         value: 8082
@@ -94,9 +94,9 @@ services:
     name: novera-order
     plan: free
     region: oregon
-    runtime: docker
-    dockerfilePath: order-service/Dockerfile
-    dockerContext: order-service
+    runtime: image
+    image:
+      url: docker.io/devdatir/novera-order-service:0.2.5
     envVars:
       - key: PORT
         value: 8083
@@ -125,9 +125,9 @@ services:
     name: novera-payment
     plan: free
     region: oregon
-    runtime: docker
-    dockerfilePath: paymnet-service/Dockerfile
-    dockerContext: paymnet-service
+    runtime: image
+    image:
+      url: docker.io/devdatir/novera-payment-service:0.2.5
     envVars:
       - key: PORT
         value: 8084
@@ -156,9 +156,9 @@ services:
     name: novera-gateway
     plan: free
     region: oregon
-    runtime: docker
-    dockerfilePath: gateway-service/Dockerfile
-    dockerContext: gateway-service
+    runtime: image
+    image:
+      url: docker.io/devdatir/novera-gateway-service:0.2.5
     envVars:
       - key: PORT
         value: 8085
@@ -181,9 +181,9 @@ services:
     name: novera-frontend
     plan: free
     region: oregon
-    runtime: docker
-    dockerfilePath: frontend/novera-frontend/Dockerfile.render
-    dockerContext: frontend/novera-frontend
+    runtime: image
+    image:
+      url: docker.io/devdatir/novera-frontend:0.3.0
     envVars:
       - key: PORT
         value: 80

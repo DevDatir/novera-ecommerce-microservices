@@ -44,7 +44,6 @@ const Navbar = () => {
     }
   };
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
@@ -60,7 +59,7 @@ const Navbar = () => {
     <>
       <Link
         to="/cart"
-        className="relative p-2 text-gray-700 hover:text-primary-600 transition-colors"
+        className="relative p-2 text-ink-700 hover:text-primary-500 transition-colors"
         aria-label="Shopping cart"
       >
         <ShoppingCart size={22} />
@@ -69,7 +68,7 @@ const Navbar = () => {
             className="
               absolute -top-1 -right-1
               flex h-5 min-w-[20px] items-center justify-center
-              rounded-full bg-primary-600 text-[10px] font-bold text-white
+              rounded-full bg-primary-500 text-[10px] font-bold text-white
             "
           >
             {totalItems}
@@ -81,7 +80,7 @@ const Navbar = () => {
         <>
           <Link
             to="/login"
-            className="text-sm font-semibold text-gray-700 hover:text-primary-600 transition-colors hidden sm:inline-block px-3 py-2"
+            className="text-sm font-semibold text-ink-700 hover:text-primary-500 transition-colors hidden sm:inline-block px-3 py-2"
           >
             Sign In
           </Link>
@@ -89,70 +88,66 @@ const Navbar = () => {
             to="/register"
             className="
               text-sm font-semibold text-white
-              bg-primary-600 hover:bg-primary-700
-              px-4 py-2 rounded-xl transition-colors
+              bg-ink-900 hover:bg-primary-500
+              px-4 py-2 rounded-md transition-colors
             "
           >
             Register
           </Link>
         </>
       ) : (
-        <>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="
-              p-2 text-gray-700 hover:text-red-600
-              hover:bg-red-50 rounded-xl transition-colors
-            "
-            aria-label="Logout"
-          >
-            <LogOut size={20} />
-          </button>
-        </>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="
+            p-2 text-ink-700 hover:text-red-600
+            hover:bg-red-50 rounded-md transition-colors
+          "
+          aria-label="Logout"
+        >
+          <LogOut size={20} />
+        </button>
       )}
     </>
   );
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-ink-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex min-h-[84px] items-center justify-between py-3">
+        <div className="flex min-h-[76px] items-center justify-between py-3">
           {/* Logo */}
           <Link
             to="/"
-            className="
-              text-3xl font-black italic tracking-tight
-              text-gray-900 hover:text-primary-600 transition-colors
-            "
+            className="font-display text-2xl text-ink-900 hover:text-primary-500 transition-colors"
           >
             NOVERA
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-2">
+          <nav className="hidden md:flex items-center gap-1">
             {navLinks.map(({ name, to }) => (
               <NavLink
                 key={name}
                 to={to}
+                end={to === "/"}
                 className={({ isActive }) =>
                   `
-                    relative min-h-11 px-4 py-2.5 rounded-xl text-sm font-semibold
-                    transition-all duration-200
+                    relative min-h-11 px-4 py-2.5 text-sm font-semibold
+                    transition-colors duration-150
                     ${
                       isActive
-                        ? "text-primary-600 bg-primary-50"
-                        : "text-gray-600 hover:text-primary-600 hover:bg-gray-50"
+                        ? "text-ink-900"
+                        : "text-ink-500 hover:text-ink-900"
                     }
                   `
                 }
               >
-                {(active) => (
+                {({ isActive }) => (
                   <>
                     <span>{name}</span>
-                    {active && (
+                    {isActive && (
                       <span
-                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-primary-600 rounded-full"
+                        className="absolute bottom-1.5 left-4 right-4 h-[3px] bg-primary-500"
                         aria-hidden="true"
                       />
                     )}
@@ -164,57 +159,50 @@ const Navbar = () => {
 
           {/* Desktop Right Section */}
           <div className="hidden md:flex items-center gap-2">
-            {/* Search */}
             <form onSubmit={handleSearch} className="relative mr-1">
               <input
                 type="search"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                placeholder="Search shoes..."
+                placeholder="Search shoes"
                 className="
-                  w-44 lg:w-52 px-4 py-2
-                  border-2 border-gray-200 rounded-full
-                  bg-gray-50 text-sm
-                  transition-all duration-300
-                  placeholder-gray-400
-                  focus:outline-none focus:border-primary-400
+                  w-44 lg:w-56 pl-4 pr-10 py-2
+                  border border-ink-200 rounded-md
+                  bg-sand-50 text-sm
+                  transition-colors duration-150
+                  placeholder-ink-300
+                  focus:outline-none focus:border-primary-400 focus:bg-white
                 "
               />
               <button
                 type="submit"
-                className="
-                  p-2 text-gray-500 hover:text-primary-600
-                  transition-colors
-                "
+                className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-ink-400 hover:text-primary-500 transition-colors"
                 aria-label="Search"
               >
-                <Search size={18} />
+                <Search size={16} />
               </button>
             </form>
 
-            <div className="flex items-center gap-2 pl-2 border-l border-gray-200 ml-1">
+            <div className="flex items-center gap-2 pl-2 border-l border-ink-100 ml-1">
               {userSection}
             </div>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center gap-3">
-            <Link to="/cart" className="relative p-2 text-gray-700 hover:text-primary-600 transition-colors" aria-label="Shopping cart">
+          <div className="md:hidden flex items-center gap-1">
+            <Link to="/cart" className="relative p-2 text-ink-700" aria-label="Shopping cart">
               <ShoppingCart size={22} />
-              {totalItems && totalItems > 0 && <span className="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary-600 text-[10px] font-bold text-white">{totalItems}</span>}
+              {totalItems && totalItems > 0 && <span className="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary-500 text-[10px] font-bold text-white">{totalItems}</span>}
             </Link>
-            <button type="button" aria-label={searchOpen ? "Close search" : "Open search"} onClick={() => setSearchOpen(!searchOpen)} className="p-2 text-gray-700 hover:text-primary-600 transition-colors">
+            <button type="button" aria-label={searchOpen ? "Close search" : "Open search"} onClick={() => setSearchOpen(!searchOpen)} className="p-2 text-ink-700">
               <Search size={22} />
             </button>
-            {isAuthenticated ? <button type="button" onClick={handleLogout} className="p-2 text-gray-700 hover:text-red-600 transition-colors" aria-label="Logout"><LogOut size={20} /></button> : <Link to="/login" className="text-sm font-semibold text-gray-700">Sign in</Link>}
+            {isAuthenticated ? <button type="button" onClick={handleLogout} className="p-2 text-ink-700" aria-label="Logout"><LogOut size={20} /></button> : <Link to="/login" className="text-sm font-semibold text-ink-700 px-1">Sign in</Link>}
             <button
               type="button"
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="
-                p-2 text-gray-700 hover:text-primary-600
-                hover:bg-gray-50 rounded-xl transition-colors
-              "
+              className="p-2 text-ink-700"
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -223,22 +211,22 @@ const Navbar = () => {
 
         {/* Mobile Search */}
         {searchOpen && (
-          <div className="md:hidden py-3 border-t border-gray-100 animate-fade-in">
+          <div className="md:hidden py-3 border-t border-ink-100 animate-fade-in">
             <form onSubmit={handleSearch} className="flex gap-2">
               <input
                 type="search"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                placeholder="Search shoes..."
+                placeholder="Search shoes"
                 className="
                   flex-1 px-4 py-2.5
-                  border-2 border-gray-200 rounded-xl
+                  border border-ink-200 rounded-md
                   focus:outline-none focus:border-primary-400
                 "
               />
               <button
                 type="submit"
-                className="px-4 text-primary-600 hover:text-primary-700"
+                className="px-4 text-primary-500"
               >
                 <Search size={20} />
               </button>
@@ -248,23 +236,21 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div
-            className="md:hidden border-t border-gray-100 animate-fade-in"
-            style={{ animationDuration: "0.3s" }}
-          >
-            <nav className="flex flex-col py-2 gap-1">
+          <div className="md:hidden border-t border-ink-100 animate-fade-in" style={{ animationDuration: "0.3s" }}>
+            <nav className="flex flex-col py-2">
               {navLinks.map(({ name, to, icon: Icon }) => (
                 <NavLink
                   key={name}
                   to={to}
+                  end={to === "/"}
                   className={({ isActive }) =>
                     `
-                      flex items-center gap-3 px-4 py-3 text-sm font-semibold
-                      rounded-xl mx-3 my-1
+                      flex items-center gap-3 px-2 py-3 text-sm font-semibold
+                      border-l-2
                       ${
                         isActive
-                          ? "text-primary-600 bg-primary-50"
-                          : "text-gray-700 hover:bg-gray-50"
+                          ? "text-ink-900 border-primary-500 pl-3"
+                          : "text-ink-500 border-transparent pl-3"
                       }
                     `
                   }
