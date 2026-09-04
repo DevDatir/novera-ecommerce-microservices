@@ -183,7 +183,7 @@ services:
     region: oregon
     runtime: image
     image:
-      url: docker.io/devdatir/novera-frontend:0.2.9
+      url: docker.io/devdatir/novera-frontend:0.2.10
     envVars:
       - key: PORT
         value: 80
