@@ -114,9 +114,10 @@ useEffect(() => {
         error={errors.country?.message}
       />
 
-      <label className="flex items-center gap-3 mt-4">
+      <label className="flex items-center gap-3 mt-4 text-sm text-ink-700">
         <input
           type="checkbox"
+          className="accent-primary-500"
           {...register("isDefault")}
         />
 

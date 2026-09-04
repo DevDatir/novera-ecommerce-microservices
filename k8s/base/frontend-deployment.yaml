@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: devdatir/novera-frontend:0.2.1
+          image: devdatir/novera-frontend:0.3.0
 
           ports:
             - containerPort: 80

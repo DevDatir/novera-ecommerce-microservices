@@ -9,37 +9,44 @@ const Input = ({
   label,
   error,
   className = "",
+  id,
   ...props
 }: Props) => {
+  const inputId = id ?? props.name;
+
   return (
     <div className="mb-5">
-
-      <label className="font-medium">
+      <label htmlFor={inputId} className="text-sm font-semibold text-ink-800">
         {label}
       </label>
 
       <input
+        id={inputId}
         {...props}
         className={`
           mt-2
           w-full
-          rounded-xl
+          rounded-md
           border
-          border-gray-300
-          p-4
+          border-ink-200
+          bg-white
+          px-4 py-3
+          text-ink-900
+          placeholder:text-ink-300
           focus:outline-none
           focus:ring-2
-          focus:ring-blue-600
+          focus:ring-primary-400
+          focus:border-primary-400
+          ${error ? "border-red-400" : ""}
           ${className}
         `}
       />
 
       {error && (
-        <p className="text-red-500 text-sm mt-1">
+        <p className="text-red-600 text-sm mt-1.5">
           {error}
         </p>
       )}
-
     </div>
   );
 };

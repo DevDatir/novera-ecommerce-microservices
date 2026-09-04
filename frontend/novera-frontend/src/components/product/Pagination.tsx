@@ -52,12 +52,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: Props) => {
         onClick={() => onPageChange(currentPage - 1)}
         className="
           inline-flex items-center gap-2
-          px-4 py-2 rounded-xl
-          border border-gray-200 bg-white
-          text-sm font-semibold text-gray-700
-          hover:bg-gray-50 hover:border-gray-300
+          px-4 py-2 rounded-md
+          border border-ink-200 bg-white
+          text-sm font-semibold text-ink-700
+          hover:border-ink-900
           disabled:opacity-40 disabled:cursor-not-allowed
-          transition-all duration-200
+          transition-colors duration-150
         "
       >
         <ChevronLeft size={16} />
@@ -69,7 +69,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: Props) => {
           pageNum === "..." ? (
             <span
               key={`ellipsis-${idx}`}
-              className="px-2 text-gray-400"
+              className="px-2 text-ink-300"
             >
               ···
             </span>
@@ -78,13 +78,13 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: Props) => {
               key={pageNum}
               onClick={() => onPageChange(pageNum as number)}
               className={`
-                min-w-[40px] h-10 px-3 rounded-xl
+                min-w-[40px] h-10 px-3 rounded-md
                 text-sm font-semibold
-                transition-all duration-200
+                transition-colors duration-150
                 ${
                   currentPage === pageNum
-                    ? "bg-primary-600 text-white shadow-md"
-                    : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300"
+                    ? "bg-primary-500 text-white"
+                    : "bg-white border border-ink-200 text-ink-700 hover:border-ink-900"
                 }
               `}
             >
@@ -99,12 +99,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: Props) => {
         onClick={() => onPageChange(currentPage + 1)}
         className="
           inline-flex items-center gap-2
-          px-4 py-2 rounded-xl
-          border border-gray-200 bg-white
-          text-sm font-semibold text-gray-700
-          hover:bg-gray-50 hover:border-gray-300
+          px-4 py-2 rounded-md
+          border border-ink-200 bg-white
+          text-sm font-semibold text-ink-700
+          hover:border-ink-900
           disabled:opacity-40 disabled:cursor-not-allowed
-          transition-all duration-200
+          transition-colors duration-150
         "
       >
         <span className="hidden sm:inline">Next</span>

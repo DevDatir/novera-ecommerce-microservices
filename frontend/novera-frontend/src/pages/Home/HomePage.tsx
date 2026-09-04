@@ -5,12 +5,8 @@ import {
   ShieldCheck,
   RotateCcw,
   BadgeCheck,
-  ChevronRight,
-  Zap,
-  TrendingUp,
   ArrowRight,
   Star,
-  Award,
 } from "lucide-react";
 import FeaturedProducts from "../../components/product/FeaturedProducts";
 import type { Product } from "../../types/product";
@@ -18,50 +14,30 @@ import { getProducts } from "../../service/productService";
 import ProductCard from "../../components/product/ProductCard";
 
 const FEATURE_CARDS = [
-  {
-    icon: Truck,
-    title: "Free Shipping",
-    subtitle: "On orders above ₹999",
-    delay: "0ms",
-  },
-  {
-    icon: RotateCcw,
-    title: "7-Day Returns",
-    subtitle: "No questions asked",
-    delay: "100ms",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Secure Payment",
-    subtitle: "100% protected checkout",
-    delay: "200ms",
-  },
-  {
-    icon: BadgeCheck,
-    title: "Premium Quality",
-    subtitle: "Curated footwear",
-    delay: "300ms",
-  },
+  { icon: Truck, title: "Free shipping", subtitle: "On orders above ₹999" },
+  { icon: RotateCcw, title: "7-day returns", subtitle: "No questions asked" },
+  { icon: ShieldCheck, title: "Secure payment", subtitle: "100% protected checkout" },
+  { icon: BadgeCheck, title: "Premium quality", subtitle: "Curated footwear" },
 ];
 
 const CATEGORIES = [
   {
     name: "Running",
     categoryId: 1,
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80",
     description: "Engineered for speed",
   },
   {
     name: "Casual",
     categoryId: 3,
-    image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=500&q=80",
     description: "Everyday style",
   },
   {
     name: "Training",
     categoryId: 4,
-    image: "https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=400&q=80",
-    description: "Make an impression",
+    image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&q=80",
+    description: "Built to move",
   },
 ];
 
@@ -86,152 +62,64 @@ const HomePage = () => {
   return (
     <div className="min-h-screen">
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
-        {/* Decorative blobs */}
-        <div
-          className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-20 blur-3xl pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)",
-            transform: "translate(30%, -30%)",
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(99,102,241,0.4) 0%, transparent 70%)",
-            transform: "translate(-30%, 30%)",
-          }}
-          aria-hidden="true"
-        />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-32">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <section className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 sm:pt-16 sm:pb-20">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left: copy */}
-            <div className="animate-fade-in-up text-center lg:text-left">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-8">
-                <Zap size={14} className="text-amber-500" />
-                New Season 2026
-              </span>
-
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight text-gray-900 mb-6">
-                Step Into{" "}
-                <span className="relative inline-block">
-                  <span className="gradient-text">Your</span>
-                </span>
+            <div className="animate-fade-in-up order-2 lg:order-1">
+              <h1 className="font-display text-[2.75rem] leading-[1.05] sm:text-6xl lg:text-[4.5rem] text-ink-900">
+                Built for
                 <br />
-                Perfect Pair
+                the next mile
               </h1>
 
-              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed max-w-lg mx-auto lg:mx-0 mb-10">
-                Premium footwear crafted for every journey. Engineered for
-                comfort, designed for style.
+              <p className="mt-6 text-lg text-ink-500 leading-relaxed max-w-md">
+                Running, training, and everyday shoes chosen for fit and
+                comfort — not just looks. Free shipping on every order above
+                ₹999.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <Link
                   to="/products"
-                  className="
-                    w-full sm:w-auto
-                    inline-flex items-center justify-center gap-2
-                    bg-primary-600 text-white
-                    px-8 py-4 rounded-2xl font-bold text-base
-                    hover:bg-primary-700 hover:shadow-2xl hover:shadow-primary-900/25
-                    transition-all duration-300 hover:-translate-y-1
-                  "
+                  className="inline-flex items-center justify-center gap-2 bg-ink-900 text-white px-7 py-4 rounded-md font-semibold hover:bg-primary-500 transition-colors"
                 >
-                  Shop Now
-                  <ArrowRight size={20} />
+                  Shop the collection
                 </Link>
-
                 <Link
-                  to="/products"
-                  className="
-                    w-full sm:w-auto
-                    inline-flex items-center justify-center gap-2
-                    bg-white text-gray-900 border-2 border-gray-900
-                    px-8 py-4 rounded-2xl font-bold text-base
-                    hover:bg-gray-900 hover:text-white
-                    transition-all duration-300
-                  "
+                  to="/products?sort=unitsSold,desc"
+                  className="inline-flex items-center justify-center gap-2 border border-ink-200 text-ink-900 px-7 py-4 rounded-md font-semibold hover:border-ink-900 transition-colors"
                 >
-                  Explore Collection
-                  <ChevronRight size={20} />
+                  See best sellers
                 </Link>
               </div>
 
-              {/* Trust badges */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-sm text-gray-500">
-                <span className="flex items-center gap-2">
-                  <ShieldCheck size={16} className="text-emerald-500" />
-                  Secure Checkout
-                </span>
-                <span className="flex items-center gap-2">
-                  <RotateCcw size={16} className="text-blue-500" />
-                  Easy Returns
-                </span>
-                <span className="flex items-center gap-2">
-                  <Star size={16} className="text-amber-500 fill-amber-500" />
-                  4.8 Rating
-                </span>
+              <div className="mt-10 flex items-center gap-8">
+                <div>
+                  <p className="font-display text-2xl text-ink-900">10k+</p>
+                  <p className="text-sm text-ink-400">pairs sold</p>
+                </div>
+                <div className="h-8 w-px bg-ink-100" aria-hidden="true" />
+                <div>
+                  <p className="font-display text-2xl text-ink-900 flex items-center gap-1">
+                    4.8 <Star size={16} className="fill-primary-500 text-primary-500" />
+                  </p>
+                  <p className="text-sm text-ink-400">average rating</p>
+                </div>
               </div>
             </div>
 
             {/* Right: hero image */}
-            <div className="relative flex justify-center lg:justify-end animate-fade-in">
-              <div
-                className="
-                  relative h-[420px] w-[420px] sm:h-[500px] sm:w-[500px]
-                  rounded-full
-                  bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100
-                  flex items-center justify-center
-                  shadow-2xl shadow-blue-200/40
-                "
-              >
-                {/* Decorative rings */}
-                <div
-                  className="absolute inset-0 rounded-full border-2 border-blue-200/40"
-                  style={{ transform: "scale(1.15)" }}
-                  aria-hidden="true"
-                />
-                <div
-                  className="absolute inset-0 rounded-full border border-indigo-200/30"
-                  style={{ transform: "scale(1.3)" }}
-                  aria-hidden="true"
-                />
+            <div className="relative order-1 lg:order-2 animate-fade-in">
+              <div className="relative bg-sand-100 aspect-square flex items-center justify-center overflow-hidden">
                 <img
                   src="https://ik.imagekit.io/4dzauczkz/6-3-removebg-preview.png?updatedAt=1785964396130"
                   alt="Featured shoe"
-                  className="
-                    w-[340px] sm:w-[420px] object-contain
-                    drop-shadow-2xl
-                    -rotate-12 hover:rotate-0 transition-transform duration-700
-                  "
+                  className="w-[75%] object-contain -rotate-6"
                 />
-                {/* Floating badge */}
-                <div
-                  className="
-                    absolute bottom-8 right-4 sm:bottom-12 sm:right-8
-                    bg-white rounded-2xl p-4 shadow-xl
-                    animate-fade-in
-                  "
-                  style={{ animationDelay: "600ms" }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
-                      <TrendingUp size={20} className="text-white" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold">
-                        Trending Now
-                      </p>
-                      <p className="text-lg font-black text-gray-900">
-                        2,400+ sold
-                      </p>
-                    </div>
-                  </div>
+                <div className="absolute bottom-5 left-5 bg-white border border-ink-100 px-4 py-3">
+                  <p className="text-xs text-ink-400">This week</p>
+                  <p className="font-display text-base text-ink-900">2,400+ sold</p>
                 </div>
               </div>
             </div>
@@ -239,29 +127,16 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ── FEATURE BANNER ── */}
-      <section className="bg-white border-y border-gray-100 py-8">
+      {/* ── FEATURE STRIP ── */}
+      <section className="bg-ink-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {FEATURE_CARDS.map(({ icon: Icon, title, subtitle, delay }) => (
-              <div
-                key={title}
-                className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 hover:shadow-sm"
-                style={{ animationDelay: delay }}
-              >
-                <div
-                  className="
-                    shrink-0 h-14 w-14 rounded-2xl
-                    bg-gradient-to-br from-blue-50 to-indigo-50
-                    flex items-center justify-center
-                    text-blue-600
-                  "
-                >
-                  <Icon size={26} />
-                </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10">
+            {FEATURE_CARDS.map(({ icon: Icon, title, subtitle }) => (
+              <div key={title} className="flex items-center gap-3 py-6 px-4 sm:px-6">
+                <Icon size={22} className="shrink-0 text-primary-400" />
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-gray-900 truncate">{title}</p>
-                  <p className="text-xs text-gray-500 truncate">{subtitle}</p>
+                  <p className="text-sm font-semibold text-white truncate">{title}</p>
+                  <p className="text-xs text-ink-300 truncate">{subtitle}</p>
                 </div>
               </div>
             ))}
@@ -270,54 +145,31 @@ const HomePage = () => {
       </section>
 
       {/* ── CATEGORIES ── */}
-      <section className="py-20 sm:py-24 bg-gradient-to-b from-white to-gray-50">
+      <section className="py-16 sm:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <p className="text-sm font-bold text-primary-600 uppercase tracking-widest mb-3">
-              Browse by Style
-            </p>
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4">
-              Shop by Category
+          <div className="flex items-end justify-between mb-10">
+            <h2 className="font-display text-3xl sm:text-4xl text-ink-900">
+              Shop by category
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Find the perfect shoes for every occasion
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
             {CATEGORIES.map(({ name, categoryId, image, description }) => (
               <Link
                 key={name}
                 to={`/products?category=${categoryId}`}
-                className="
-                  group relative h-80 rounded-3xl overflow-hidden
-                  shadow-lg hover:shadow-2xl
-                  transition-all duration-500 hover:-translate-y-2
-                "
+                className="group relative h-80 overflow-hidden block"
               >
                 <img
                   src={image}
                   alt={name}
-                  className="
-                    w-full h-full object-cover
-                    group-hover:scale-110 transition-transform duration-700
-                  "
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-8">
-                  <h3 className="text-3xl font-black text-white mb-2">{name}</h3>
-                  <p className="text-base text-white/80 mb-4">{description}</p>
-                  <span
-                    className="
-                      inline-flex items-center gap-2
-                      text-sm font-bold text-white
-                      opacity-0 group-hover:opacity-100
-                      transform translate-y-2 group-hover:translate-y-0
-                      transition-all duration-300
-                    "
-                  >
-                    Shop Now <ArrowRight size={16} />
-                  </span>
+                <div className="absolute inset-0 bg-gradient-to-t from-ink-900/85 via-ink-900/10 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <h3 className="font-display text-2xl text-white">{name}</h3>
+                  <p className="text-sm text-white/75 mt-1">{description}</p>
+                  <span className="mt-3 inline-block h-0.5 w-8 bg-primary-500 group-hover:w-14 transition-all duration-300" />
                 </div>
               </Link>
             ))}
@@ -326,48 +178,33 @@ const HomePage = () => {
       </section>
 
       {/* ── TRENDING PRODUCTS ── */}
-      <section className="py-20 sm:py-24 bg-white">
+      <section className="py-16 sm:py-20 bg-sand-50 border-y border-ink-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <p className="text-sm font-bold text-primary-600 uppercase tracking-widest mb-3">
-              Hot right now
-            </p>
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4">
-              Trending Picks
+          <div className="flex items-end justify-between mb-10">
+            <h2 className="font-display text-3xl sm:text-4xl text-ink-900">
+              Trending picks
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Discover what everyone's loving this season
-            </p>
+            <Link
+              to="/products?sort=unitsSold,desc"
+              className="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-ink-900 hover:text-primary-500 transition-colors"
+            >
+              View all <ArrowRight size={16} />
+            </Link>
           </div>
 
           {loadingTrending ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-gray-100 rounded-3xl h-96 skeleton" />
+                <div key={i} className="bg-white border border-ink-100 aspect-[3/4] skeleton" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {trendingProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
           )}
-
-          <div className="mt-12 text-center">
-            <Link
-              to="/products?sort=unitsSold,desc"
-              className="
-                inline-flex items-center gap-2
-                bg-primary-600 text-white px-8 py-4 rounded-2xl
-                font-bold text-base
-                hover:bg-primary-700 hover:shadow-xl
-                transition-all duration-300 hover:-translate-y-0.5
-              "
-            >
-              View All Trending <ArrowRight size={18} />
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -375,78 +212,30 @@ const HomePage = () => {
       <FeaturedProducts />
 
       {/* ── CTA BANNER ── */}
-      <section className="relative py-24 sm:py-32 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
-        {/* Decorative elements */}
-        <div
-          className="absolute top-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl"
-          aria-hidden="true"
-        />
-
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-widest mb-8">
-            <Award size={14} className="text-amber-400" />
-            Join 10,000+ Happy Customers
-          </div>
-
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
-            Ready to find your
-            <br />
-            <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-              perfect pair?
-            </span>
+      <section className="bg-ink-900 py-20 sm:py-28">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="font-display text-4xl sm:text-5xl text-white leading-tight">
+            Find your perfect pair
           </h2>
 
-          <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-5 text-lg text-ink-300 max-w-xl mx-auto">
             Join thousands who trust Novera for style, comfort, and quality.
             Free shipping on orders above ₹999.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/products"
-              className="
-                w-full sm:w-auto
-                inline-flex items-center justify-center gap-2
-                bg-white text-gray-900
-                px-10 py-5 rounded-2xl font-bold text-lg
-                hover:bg-gray-100 hover:shadow-2xl
-                transition-all duration-300 hover:-translate-y-1
-              "
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary-500 text-white px-8 py-4 rounded-md font-semibold hover:bg-primary-600 transition-colors"
             >
-              Start Shopping <ArrowRight size={20} />
+              Start shopping
             </Link>
             <Link
               to="/register"
-              className="
-                w-full sm:w-auto
-                inline-flex items-center justify-center gap-2
-                bg-transparent text-white border-2 border-white/30
-                px-10 py-5 rounded-2xl font-bold text-lg
-                hover:bg-white/10 hover:border-white
-                transition-all duration-300
-              "
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-white/25 text-white px-8 py-4 rounded-md font-semibold hover:border-white transition-colors"
             >
-              Create Account
+              Create account
             </Link>
-          </div>
-
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-400">
-            <span className="flex items-center gap-2">
-              <ShieldCheck size={18} className="text-emerald-400" />
-              Secure Checkout
-            </span>
-            <span className="flex items-center gap-2">
-              <Truck size={18} className="text-blue-400" />
-              Free Shipping
-            </span>
-            <span className="flex items-center gap-2">
-              <RotateCcw size={18} className="text-purple-400" />
-              Easy Returns
-            </span>
           </div>
         </div>
       </section>

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { CreditCard } from "lucide-react";
 
 import Button from "../../components/ui/Button";
 import { usePayment } from "../../hooks/usePayment";
@@ -96,7 +97,7 @@ const PaymentPage = () => {
 
                 theme: {
 
-                    color: "#2563eb",
+                    color: "#ff4b1f",
 
                 },
 
@@ -166,37 +167,37 @@ const PaymentPage = () => {
 
     return (
 
-        <div className="min-h-[70vh] flex items-center justify-center p-6 bg-slate-50">
+        <div className="min-h-[70vh] flex items-center justify-center p-6 bg-sand-50">
 
-            <div className="bg-white border border-gray-100 shadow-xl rounded-2xl p-8 max-w-md w-full text-center space-y-6">
+            <div className="bg-white border border-ink-100 p-8 max-w-md w-full text-center space-y-6">
 
-                <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
-                    💳
+                <div className="w-14 h-14 bg-primary-50 text-primary-500 flex items-center justify-center mx-auto">
+                    <CreditCard size={24} />
                 </div>
 
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
-                        Complete Your Payment
+                    <h2 className="font-display text-2xl text-ink-900">
+                        Complete your payment
                     </h2>
 
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-ink-400 mt-1">
                         Order #{orderId}
                     </p>
                 </div>
 
                 {paymentData && (
-                    <div className="bg-gray-50 p-4 rounded-xl space-y-2 text-sm text-gray-700">
+                    <div className="bg-sand-50 p-4 space-y-2 text-sm text-ink-700">
                         <div className="flex justify-between">
-                            <span>Amount to Pay:</span>
+                            <span>Amount to pay</span>
 
-                            <span className="font-bold text-gray-900">
+                            <span className="font-semibold text-ink-900">
                                 ₹{(paymentData.amount / 100).toFixed(2)}{" "}
                                 {paymentData.currency}
                             </span>
                         </div>
 
-                        <div className="flex justify-between text-xs text-gray-500">
-                            <span>Razorpay Order ID:</span>
+                        <div className="flex justify-between text-xs text-ink-400">
+                            <span>Razorpay order ID</span>
 
                             <span className="font-mono">
                                 {paymentData.razorpayOrderId}
@@ -207,22 +208,23 @@ const PaymentPage = () => {
 
                 <div className="space-y-3 pt-2">
                     <Button
+                        className="w-full"
                         onClick={handleInitiatePayment}
                         loading={isProcessing}
                         disabled={isProcessing}
                     >
                         {paymentData
-                            ? "Re-open Razorpay Gateway"
-                            : "Proceed to Pay with Razorpay"}
+                            ? "Re-open Razorpay gateway"
+                            : "Proceed to pay with Razorpay"}
                     </Button>
 
                     <button
                         type="button"
                         onClick={() => navigate("/checkout")}
                         disabled={isProcessing}
-                        className="w-full text-sm text-gray-500 hover:text-gray-700 font-medium py-2 transition"
+                        className="w-full text-sm text-ink-500 hover:text-ink-800 font-medium py-2 transition"
                     >
-                        Cancel & Return to Checkout
+                        Cancel & return to checkout
                     </button>
                 </div>
 

@@ -1,10 +1,12 @@
 package com.example.novera.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class AddressResponse {
 
     private Long id;
@@ -26,4 +28,8 @@ public class AddressResponse {
     private String country;
 
     private Boolean isDefault;
+
+    public AddressResponse() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

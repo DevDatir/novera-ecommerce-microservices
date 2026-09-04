@@ -98,31 +98,31 @@ const AddressPage = () => {
 
   if (isLoading) {
     return (
-      <div className="p-10 text-center">
+      <div className="p-20 text-center text-ink-400">
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
+    <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-10">
 
       <div className="mb-6">
         <button
           type="button"
           onClick={() => navigate("/products")}
-          className="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700 transition mb-2"
+          className="inline-flex items-center text-sm font-semibold text-ink-500 hover:text-ink-900 transition mb-2"
         >
-          &larr; Back to Products
+          &larr; Back to products
         </button>
 
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Saved Addresses
+          <h1 className="font-display text-3xl text-ink-900">
+            Saved addresses
           </h1>
 
-          <Button onClick={openAddModal}>
-            + Add Address
+          <Button size="sm" onClick={openAddModal}>
+            + Add address
           </Button>
         </div>
       </div>

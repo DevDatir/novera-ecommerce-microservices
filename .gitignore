@@ -1,0 +1,17 @@
+images/
+env/
+.m2/
+.vscode/
+.idea/
+.env
+.env.*.local
+k8s/base/novera-secret.yaml
+frontend/novera-frontend/node_modules/
+frontend/novera-frontend/dist/
+
+# Stray compiled bytecode (target/ is already covered per-service)
+*.class
+
+# OS cruft
+.DS_Store
+Thumbs.db
