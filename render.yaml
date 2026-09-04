@@ -78,7 +78,7 @@ services:
       - key: CART_DB_URL
         sync: false          # jdbc:postgresql://<host>:5432/novera_cart_db
       - key: PRODUCT_SERVICE_URL
-        sync: false          # https://novera-product.onrender.com
+        value: https://novera-product.onrender.com
       - key: POSTGRES_USER
         fromDatabase:
           name: novera-postgres
@@ -105,11 +105,11 @@ services:
       - key: ORDER_DB_URL
         sync: false          # jdbc:postgresql://<host>:5432/novera_orders
       - key: AUTH_SERVICE_URL
-        sync: false          # https://novera-auth.onrender.com
+        value: https://novera-auth.onrender.com
       - key: PRODUCT_SERVICE_URL
-        sync: false          # https://novera-product.onrender.com
+        value: https://novera-product.onrender.com
       - key: CART_SERVICE_URL
-        sync: false          # https://novera-cart.onrender.com
+        value: https://novera-cart.onrender.com
       - key: POSTGRES_USER
         fromDatabase:
           name: novera-postgres
@@ -136,7 +136,7 @@ services:
       - key: PAYMENT_DB_URL
         sync: false          # jdbc:postgresql://<host>:5432/novera_payment_db
       - key: ORDER_SERVICE_URL
-        sync: false          # https://novera-order.onrender.com
+        value: https://novera-order.onrender.com
       - key: RAZORPAY_KEY_ID
         sync: false          # your Razorpay key id
       - key: RAZORPAY_KEY_SECRET
@@ -165,15 +165,15 @@ services:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
       - key: AUTH_SERVICE_URL
-        sync: false          # https://novera-auth.onrender.com
+        value: https://novera-auth.onrender.com
       - key: PRODUCT_SERVICE_URL
-        sync: false          # https://novera-product.onrender.com
+        value: https://novera-product.onrender.com
       - key: CART_SERVICE_URL
-        sync: false          # https://novera-cart.onrender.com
+        value: https://novera-cart.onrender.com
       - key: ORDER_SERVICE_URL
-        sync: false          # https://novera-order.onrender.com
+        value: https://novera-order.onrender.com
       - key: PAYMENT_SERVICE_URL
-        sync: false          # https://novera-payment.onrender.com
+        value: https://novera-payment.onrender.com
       - fromGroup: novera-shared
 
   # ── Frontend ────────────────────────────────────────────────────────────────
